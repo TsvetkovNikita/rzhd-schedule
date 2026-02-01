@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="refresh" content="{{ refresh_seconds }}">
+  <title>Табло — Саратов-1</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="screen">
+    <div class="top">
+      <div class="title-block">
+        <div class="h1">Онлайн-табло: Саратов-1</div>
+        <div class="sub">Саратовское время</div>
+      </div>
+
+      <div class="clock">
+        <div class="date">{{ date_str }}</div>
+        <div class="time">{{ time_str }}</div>
+      </div>
+    </div>
+
+    <div class="table-title">
+      <div>Ближайшие поезда / Upcoming trains</div>
+      <div class="hint">До +12 часов · максимум {{ max_rows }}</div>
+    </div>
+
+    <div class="box">
+      <table>
+        <thead>
+          <tr>
+            <th class="c-num">№ / Train</th>
+            <th class="c-route">Маршрут / Route</th>
+            <th class="c-arr">Приб / Arrival</th>
+            <th class="c-dwell">Стоянка / Dwell</th>
+            <th class="c-dep">Отпр / Departure</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if rows %}
+            {% for r in rows %}
+              {% set a = r.arrival_str() %}
+              {% set d = r.departure_str() %}
+              {% set w = r.dwell_str() %}
+              <tr>
+                <td class="c-num"><b>{{ r.number }}</b></td>
+                <td class="c-route">{{ r.title }}</td>
+                <td class="c-arr {{ 'arr' if a != '—' else 'empty' }}">{{ a }}</td>
+                <td class="c-dwell {{ 'dwell' if w != '—' else 'empty' }}">{{ w }}</td>
+                <td class="c-dep {{ 'dep' if d != '—' else 'empty' }}">{{ d }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="empty-message">
+                Нет поездов в заданном окне
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if err %}
+      <div class="err">Ошибка обновления данных: {{ err }}</div>
+    {% endif %}
+  </div>
+
+  <script>
+    (() => {
+      const tz = "{{ tz_name }}";
+      let ms = {{ now_epoch_ms }};
+
+      const dateEl = document.querySelector(".clock .date");
+      const timeEl = document.querySelector(".clock .time");
+
+      const fmtDate = new Intl.DateTimeFormat("en-CA", {
+        timeZone: tz,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
+
+      const fmtTime = new Intl.DateTimeFormat("ru-RU", {
+        timeZone: tz,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      });
+
+      function render() {
+        const d = new Date(ms);
+        dateEl.textContent = fmtDate.format(d);
+        timeEl.textContent = fmtTime.format(d);
+      }
+
+      render();
+      setInterval(() => {
+        ms += 1000;
+        render();
+      }, 1000);
+    })();
+  </script>
+</body>
+</html>
