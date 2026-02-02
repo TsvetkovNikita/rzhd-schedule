@@ -3,7 +3,7 @@ from __future__ import annotations
 import ipaddress
 from functools import wraps
 from typing import Callable, List
-from flask import request, Response, abort
+from flask import request, Response, abort, session, redirect, url_for
 from config import cfg
 
 
@@ -54,16 +54,30 @@ class AuthManager:
             return True
         return token in cfg.token_auth_tokens
 
+    @staticmethod
+    def check_simple_auth(password: str) -> bool:
+        """Проверка простой авторизации по паролю"""
+        if not cfg.simple_auth_enable:
+            return True
+        return password == cfg.simple_auth_password
+
 
 def require_auth(f: Callable):
     """Декоратор для защиты маршрутов"""
 
     @wraps(f)
     def decorated(*args, **kwargs):
+        # Для простой авторизации проверяем сессию
+        if cfg.simple_auth_enable:
+            if session.get('authenticated'):
+                return f(*args, **kwargs)
+            else:
+                return redirect(url_for('login'))
+
         auth_manager = AuthManager()
         client_ip = auth_manager.get_client_ip()
 
-        # Проверка IP
+        # Проверка IP (если простая авторизация отключена)
         if not auth_manager.check_ip_allowed(client_ip):
             abort(403, description="IP address not allowed")
 

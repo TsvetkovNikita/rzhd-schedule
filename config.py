@@ -52,6 +52,11 @@ class Config:
         self.token_auth_enable = security.get("token_auth", {}).get("enable", False)
         self.token_auth_tokens = security.get("token_auth", {}).get("tokens", [])
 
+        # Простая авторизация
+        simple_auth = security.get("simple_auth", {})
+        self.simple_auth_enable = simple_auth.get("enable", False)
+        self.simple_auth_password = simple_auth.get("password", "")
+
     @property
     def display_timezone(self) -> str:
         """Возвращает временную зону для отображения"""

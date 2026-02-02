@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Вход — Табло Саратов-1</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --text: #e6edf3;
+      --muted: rgba(230, 237, 243, .70);
+      --border: rgba(255, 255, 255, .10);
+      --panel: rgba(255, 255, 255, .04);
+      --accent: rgba(255, 90, 90, 1);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+
+    .password-input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 18px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .password-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .submit-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .error-message {
+      color: #ff6b6b;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .info {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="title">Табло Саратов-1</div>
+      <div class="subtitle">Введите пароль для доступа</div>
+
+      <form method="POST" action="/login">
+        <input type="password"
+               name="password"
+               class="password-input"
+               placeholder="Пароль"
+               required
+               autofocus>
+
+        <button type="submit" class="submit-btn">Войти</button>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="error-message">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </form>
+
+      <div class="info">
+        Для доступа к табло требуется авторизация
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,19 +1,43 @@
 from __future__ import annotations
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from config import cfg
-from auth import require_auth
+from auth import require_auth, AuthManager
 from cache import cache_manager
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-here'  # Для сессий
 
 
 @app.before_request
 def before_request():
     """Логирование запросов"""
-    from auth import AuthManager
     client_ip = AuthManager.get_client_ip()
     app.logger.info(f"Request from {client_ip} to {request.path}")
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Страница входа с простой авторизацией"""
+    if not cfg.simple_auth_enable:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        if AuthManager.check_simple_auth(password):
+            session['authenticated'] = True
+            return redirect(url_for('index'))
+        else:
+            flash('Неверный пароль', 'error')
+
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    """Выход из системы"""
+    session.pop('authenticated', None)
+    return redirect(url_for('login'))
 
 
 @app.get("/")
@@ -32,6 +56,7 @@ def index() -> str:
         tz_name=cfg.display_timezone,
         max_rows=cfg.max_rows,
         refresh_seconds=cfg.refresh_seconds,
+        simple_auth_enabled=cfg.simple_auth_enable,
     )
 
 

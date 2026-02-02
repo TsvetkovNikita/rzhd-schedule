@@ -19,6 +19,12 @@
         <div class="date">{{ date_str }}</div>
         <div class="time">{{ time_str }}</div>
       </div>
+
+      {% if simple_auth_enabled %}
+        <div class="logout-btn">
+          <a href="/logout" title="Выйти">🔒</a>
+        </div>
+      {% endif %}
     </div>
 
     <div class="table-title">
@@ -45,7 +51,11 @@
               {% set w = r.dwell_str() %}
               <tr>
                 <td class="c-num"><b>{{ r.number }}</b></td>
-                <td class="c-route">{{ r.title }}</td>
+                <td class="c-route">
+                  <div class="route-container">
+                    <div class="route-text">{{ r.title }}</div>
+                  </div>
+                </td>
                 <td class="c-arr {{ 'arr' if a != '—' else 'empty' }}">{{ a }}</td>
                 <td class="c-dwell {{ 'dwell' if w != '—' else 'empty' }}">{{ w }}</td>
                 <td class="c-dep {{ 'dep' if d != '—' else 'empty' }}">{{ d }}</td>
@@ -101,6 +111,37 @@
         ms += 1000;
         render();
       }, 1000);
+
+      // Функция для проверки и добавления прокрутки длинных названий
+      function setupRouteScrolling() {
+        const routeContainers = document.querySelectorAll('.route-container');
+
+        routeContainers.forEach(container => {
+          const textElement = container.querySelector('.route-text');
+          const containerWidth = container.clientWidth;
+          const textWidth = textElement.scrollWidth;
+
+          // Если текст шире контейнера, добавляем анимацию прокрутки
+          if (textWidth > containerWidth) {
+            textElement.classList.add('scrolling');
+
+            // Рассчитываем длительность анимации в зависимости от длины текста
+            const extraWidth = textWidth - containerWidth;
+            const duration = 10 + (extraWidth / 50); // Базовые 10 секунд + дополнительное время
+
+            textElement.style.setProperty('--scroll-duration', `${duration}s`);
+          } else {
+            textElement.classList.remove('scrolling');
+          }
+        });
+      }
+
+      // Запускаем при загрузке и при изменении размера окна
+      window.addEventListener('load', setupRouteScrolling);
+      window.addEventListener('resize', setupRouteScrolling);
+
+      // Также запускаем после небольшей задержки, чтобы все стили применились
+      setTimeout(setupRouteScrolling, 100);
     })();
   </script>
 </body>
