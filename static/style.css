@@ -1,16 +1,17 @@
 :root {
   --bg: #0b0f14;
-  --text: #e6edf3;
-  --muted: rgba(230, 237, 243, .70);
-  --border: rgba(255, 255, 255, .10);
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, .60);
+  --border: rgba(255, 255, 255, .08);
   --panel: rgba(255, 255, 255, .04);
-  --head: rgba(255, 255, 255, .07);
+  --head: rgba(255, 255, 255, .10);
 
-  /* Более яркие/контрастные цвета */
-  --arr: #00e676; /* green */
-  --dep: #ff1f1f; /* red */
+  /* Монохромные цвета для транспортного табло */
+  --arr: #00ff88; /* ярко-зеленый для прибытия */
+  --dep: #ff4444; /* ярко-красный для отправления */
+  --clock-color: #00c3ff; /* синий для времени (видно с 10+ метров) */
 
-  /* Прокрутка длинных маршрутов */
+  /* Прокрутка */
   --scroll-duration: 15s;
   --scroll-offset: -120px;
 }
@@ -20,7 +21,7 @@ html, body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: 'Roboto Condensed', 'Roboto', Arial, sans-serif;
   overflow: hidden;
 }
 
@@ -28,82 +29,95 @@ html, body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 18px 20px;      /* чуть меньше отступы — больше места под строки */
+  padding: 20px 25px; /* больше отступов для ТВ */
   box-sizing: border-box;
-  gap: 10px;
+  gap: 15px;
 }
 
 .top {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* выравнивание по верху */
   justify-content: space-between;
-  gap: 14px;
+  gap: 20px;
 }
 
 .title-block {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  flex: 1;
 }
 
 .h1 {
-  font-size: clamp(34px, 3.2vw, 72px);
+  font-size: clamp(46px, 4vw, 90px); /* больше для ТВ */
   font-weight: 900;
-  letter-spacing: .2px;
-  line-height: 1.05;
+  letter-spacing: 1px;
+  line-height: 1;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+  margin: 0;
 }
 
 .sub {
-  font-size: clamp(14px, 1.15vw, 18px);
-  color: var(--muted);
-  font-weight: 800;
+  font-size: clamp(26px, 2vw, 40px); /* больше для ТВ */
+  color: var(--clock-color); /* синий как у времени */
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
 }
 
 .right-block {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 420px; /* фиксированная ширина для времени */
 }
 
+/* Убрали рамку и фон у часов */
 .clock {
   text-align: right;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--panel);
-  min-width: 360px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  min-width: auto;
 }
 
 .clock .dt-line {
   display: flex;
-  justify-content: flex-end;
-  align-items: baseline;    /* “в одном уровне” */
-  gap: 14px;
+  flex-direction: column; /* дата и время вертикально */
+  align-items: flex-end;
+  gap: 2px; /* маленький отступ между датой и временем */
   white-space: nowrap;
 }
 
 .clock .date {
-  font-size: clamp(22px, 1.75vw, 36px);
-  color: var(--dep);
-  font-weight: 950;
+  font-size: clamp(28px, 2.2vw, 44px);
+  color: var(--clock-color); /* синий цвет */
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
 }
 
 .clock .time {
-  font-size: clamp(34px, 2.75vw, 64px);
-  color: var(--dep);
-  font-weight: 950;
+  font-size: clamp(52px, 4.5vw, 100px); /* время больше даты */
+  color: var(--clock-color); /* синий цвет */
+  font-weight: 900;
   font-variant-numeric: tabular-nums;
-  line-height: 1.0;
+  line-height: 1;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(0, 195, 255, 0.3);
 }
 
 /* logout */
 .logout-btn a {
   display: inline-block;
-  padding: 10px 14px;
+  padding: 8px 14px;
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--muted);
   text-decoration: none;
   font-size: 18px;
@@ -111,21 +125,20 @@ html, body {
 }
 
 .logout-btn a:hover {
-  background: rgba(255, 31, 31, 0.12);
+  background: rgba(255, 68, 68, 0.12);
   color: var(--dep);
   border-color: var(--dep);
 }
 
-/* На всякий случай — если блок где-то останется, скрываем */
 .table-title { display: none; }
 
 .box {
   flex: 1;
   min-height: 0;
-  border-radius: 18px;
+  border-radius: 12px; /* меньше скругление */
   overflow: hidden;
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, .02);
+  background: rgba(0, 0, 0, 0.3); /* темнее фон для контраста */
   display: flex;
 }
 
@@ -137,28 +150,38 @@ table {
 
 thead th {
   background: var(--head);
-  padding: 14px 10px;  /* меньше горизонтальные отступы — “колонки ближе” */
-  font-size: clamp(20px, 1.65vw, 32px); /* увеличили заголовки */
-  font-weight: 950;
+  padding: 18px 12px; /* больше отступов */
+  font-size: clamp(22px, 1.8vw, 36px); /* больше для ТВ */
+  font-weight: 900;
   text-align: center;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border); /* толще линия */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 tbody td {
-  padding: 12px 10px;  /* меньше расстояние между столбцами */
-  font-size: clamp(26px, 2.25vw, 54px); /* увеличили строки */
+  padding: 16px 12px; /* больше отступов */
+  font-size: clamp(28px, 2.3vw, 60px); /* больше для ТВ */
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, .08);
+  border-top: 1px solid rgba(255, 255, 255, .06);
   vertical-align: middle;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
 }
 
-/* Ширины колонок */
-.c-num { width: 15%; }
-.c-route { width: 43%; }
+/* Ширины колонок - оптимизированы для ТВ */
+.c-num {
+  width: 16%;
+  font-weight: 700;
+}
+.c-route {
+  width: 42%;
+  text-align: left;
+  padding-left: 20px !important;
+}
 .c-arr { width: 14%; }
 .c-dwell { width: 14%; }
 .c-dep { width: 14%; }
@@ -170,19 +193,21 @@ tbody td {
   width: 100%;
   display: flex;
   align-items: center;
+  min-height: 60px; /* минимальная высота для ТВ */
 }
 
 .route-text {
   white-space: nowrap;
-  padding: 0 4px;
+  padding: 0 6px;
   display: inline-block;
   will-change: transform;
+  font-size: clamp(28px, 2.3vw, 60px); /* тот же размер что и в ячейке */
 }
 
 .route-text.scrolling {
   animation: scrollText var(--scroll-duration, 15s) linear infinite;
   animation-delay: 1.5s;
-  padding-right: 40px;
+  padding-right: 60px; /* больше отступ для ТВ */
 }
 
 .route-text.scrolling:hover {
@@ -194,38 +219,89 @@ tbody td {
   100% { transform: translateX(var(--scroll-offset, -120px)); }
 }
 
-/* Подсветки времени */
+/* Подсветки времени - ярче для ТВ */
 .arr {
   color: var(--arr);
-  font-weight: 950;
-  text-shadow: 0 0 10px rgba(0, 230, 118, .35);
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
 }
 
 .dep {
   color: var(--dep);
-  font-weight: 950;
-  text-shadow: 0 0 10px rgba(255, 31, 31, .35);
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
 }
 
 .dwell {
-  color: rgba(230, 237, 243, .92);
-  font-weight: 900;
+  color: rgba(255, 255, 255, .95);
+  font-weight: 700;
 }
 
 .empty {
-  color: rgba(230, 237, 243, .35);
-  font-weight: 800;
+  color: rgba(255, 255, 255, .35);
+  font-weight: 600;
 }
 
 .empty-message {
-  padding: 22px !important;
-  font-size: 24px !important;
-  color: rgba(230, 237, 243, .75) !important;
+  padding: 40px !important; /* больше для ТВ */
+  font-size: 32px !important; /* больше для ТВ */
+  color: rgba(255, 255, 255, .6) !important;
   text-align: center !important;
 }
 
 .err {
-  margin-top: 6px;
-  font-size: clamp(14px, 1.05vw, 18px);
-  color: #ffb4b4;
+  margin-top: 10px;
+  font-size: clamp(16px, 1.2vw, 22px);
+  color: #ff8888;
+  text-align: center;
+}
+
+/* Оптимизация для горизонтальной ориентации телевизора */
+@media (min-aspect-ratio: 16/9) {
+  .screen {
+    padding: 25px 35px;
+  }
+
+  .h1 {
+    font-size: clamp(48px, 4.5vw, 100px);
+  }
+
+  .clock .time {
+    font-size: clamp(56px, 5vw, 110px);
+  }
+
+  tbody td {
+    font-size: clamp(30px, 2.5vw, 65px);
+  }
+}
+
+/* Для очень больших экранов */
+@media (min-width: 1920px) {
+  .screen {
+    padding: 30px 50px;
+  }
+
+  .h1 {
+    font-size: 85px;
+  }
+
+  .sub {
+    font-size: 38px;
+  }
+
+  .clock .date {
+    font-size: 42px;
+  }
+
+  .clock .time {
+    font-size: 95px;
+  }
+
+  thead th {
+    font-size: 34px;
+  }
+
+  tbody td {
+    font-size: 58px;
+  }
 }

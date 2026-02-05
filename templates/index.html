@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="refresh" content="{{ refresh_seconds }}">
   <title>Табло — Саратов-1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -24,9 +27,6 @@
         </div>
 
         {% if simple_auth_enabled %}
-          <div class="logout-btn">
-            <a href="/logout" title="Выйти">🔒</a>
-          </div>
         {% endif %}
       </div>
     </div>
@@ -35,11 +35,11 @@
       <table>
         <thead>
           <tr>
-            <th class="c-num">№ / Train</th>
-            <th class="c-route">Маршрут / Route</th>
-            <th class="c-arr">Приб / Arrival</th>
-            <th class="c-dwell">Стоянка / Dwell</th>
-            <th class="c-dep">Отпр / Departure</th>
+            <th class="c-num">№ поезда</th>
+            <th class="c-route">Маршрут</th>
+            <th class="c-arr">Прибытие</th>
+            <th class="c-dwell">Стоянка</th>
+            <th class="c-dep">Отправление</th>
           </tr>
         </thead>
         <tbody>
@@ -63,7 +63,7 @@
           {% else %}
             <tr>
               <td colspan="5" class="empty-message">
-                Нет поездов в заданном окне
+                Нет поездов в ближайшее время
               </td>
             </tr>
           {% endif %}
@@ -84,29 +84,34 @@
       const dateEl = document.querySelector(".clock .date");
       const timeEl = document.querySelector(".clock .time");
 
-      const fmtDate = new Intl.DateTimeFormat("en-CA", {
-        timeZone: tz,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      });
+      // Форматирование даты для русского формата (дд.мм.гггг)
+      function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+      }
 
-      const fmtTime = new Intl.DateTimeFormat("ru-RU", {
-        timeZone: tz,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      });
+      // Форматирование времени
+      function formatTime(date) {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+      }
 
       function render() {
         const d = new Date(ms);
-        dateEl.textContent = fmtDate.format(d);
-        timeEl.textContent = fmtTime.format(d);
+
+        // Используем локальное форматирование
+        dateEl.textContent = formatDate(d);
+        timeEl.textContent = formatTime(d);
       }
 
       render();
-      setInterval(() => {
+
+      // Обновляем каждую секунду
+      const intervalId = setInterval(() => {
         ms += 1000;
         render();
       }, 1000);
@@ -126,7 +131,7 @@
 
             // Рассчитываем длительность анимации в зависимости от длины текста
             const extraWidth = textWidth - containerWidth;
-            const duration = 10 + (extraWidth / 50); // Базовые 10 секунд + дополнительное время
+            const duration = 8 + (extraWidth / 30); // Быстрее для ТВ
 
             textElement.style.setProperty('--scroll-duration', `${duration}s`);
             textElement.style.setProperty('--scroll-offset', `-${extraWidth}px`);
@@ -137,12 +142,17 @@
         });
       }
 
-      // Запускаем при загрузке и при изменении размера окна
+      // Запускаем при загрузке
       window.addEventListener('load', setupRouteScrolling);
       window.addEventListener('resize', setupRouteScrolling);
 
-      // Также запускаем после небольшей задержки, чтобы все стили применились
+      // Также запускаем после задержки
       setTimeout(setupRouteScrolling, 100);
+
+      // Остановка при уходе со страницы
+      window.addEventListener('beforeunload', () => {
+        clearInterval(intervalId);
+      });
     })();
   </script>
 </body>
