@@ -305,3 +305,136 @@ tbody td {
     font-size: 58px;
   }
 }
+
+/* Кнопка переключения скинов */
+.skin-switcher {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.15;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+.skin-switcher:hover {
+    opacity: 0.8;
+}
+
+.skin-switcher a {
+    display: block;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--clock-color);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s;
+}
+
+.skin-switcher a:hover {
+    background: rgba(0, 195, 255, 0.1);
+    border-color: var(--clock-color);
+}
+
+.skin-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Стили для compact скина */
+.compact-title .h1 {
+    font-size: clamp(36px, 3.2vw, 70px) !important;
+    margin-bottom: 5px;
+}
+
+.compact-title .sub {
+    font-size: clamp(22px, 1.8vw, 32px) !important;
+    margin-bottom: 5px;
+}
+
+.compact-table tbody td {
+    font-size: clamp(24px, 2vw, 48px) !important;
+    padding: 12px 10px !important;
+}
+
+.compact-table thead th {
+    font-size: clamp(20px, 1.6vw, 30px) !important;
+    padding: 14px 10px !important;
+}
+
+.compact-table .route-container {
+    min-height: 50px !important;
+}
+
+.compact-table .route-text {
+    font-size: clamp(24px, 2vw, 48px) !important;
+}
+
+/* Стили для ultra-compact скина */
+.ultra-compact-title .h1 {
+    font-size: clamp(28px, 2.5vw, 50px) !important;
+    margin-bottom: 2px;
+}
+
+.ultra-compact-title .sub {
+    font-size: clamp(18px, 1.5vw, 26px) !important;
+    margin-bottom: 3px;
+}
+
+.ultra-compact-table tbody td {
+    font-size: clamp(20px, 1.7vw, 36px) !important;
+    padding: 8px 6px !important;
+}
+
+.ultra-compact-table thead th {
+    font-size: clamp(18px, 1.4vw, 26px) !important;
+    padding: 10px 6px !important;
+}
+
+.ultra-compact-table .route-container {
+    min-height: 40px !important;
+}
+
+.ultra-compact-table .route-text {
+    font-size: clamp(20px, 1.7vw, 36px) !important;
+}
+
+/* Адаптация часов для компактных скинов */
+.compact-title ~ .right-block .clock .date {
+    font-size: clamp(24px, 2vw, 36px) !important;
+}
+
+.compact-title ~ .right-block .clock .time {
+    font-size: clamp(40px, 3.5vw, 70px) !important;
+}
+
+.ultra-compact-title ~ .right-block .clock .date {
+    font-size: clamp(20px, 1.8vw, 32px) !important;
+}
+
+.ultra-compact-title ~ .right-block .clock .time {
+    font-size: clamp(32px, 3vw, 60px) !important;
+}
+
+/* Для очень больших экранов - дополнительные настройки */
+@media (min-width: 1920px) {
+    .compact-title .h1 {
+        font-size: 60px !important;
+    }
+
+    .compact-table tbody td {
+        font-size: 40px !important;
+    }
+
+    .ultra-compact-title .h1 {
+        font-size: 45px !important;
+    }
+
+    .ultra-compact-table tbody td {
+        font-size: 32px !important;
+    }
+}

@@ -46,6 +46,30 @@ def index() -> str:
     """Главная страница с табло"""
     rows, err, now = cache_manager.get_rows_cached()
 
+    # Получаем текущий скин (0=default, 1=compact, 2=ultra_compact)
+    skin_index = session.get('skin_index', 0)
+
+    # Определяем параметры для каждого скина
+    if skin_index == 1:  # compact
+        max_rows = 12
+        screen_padding = "15px 20px"
+        title_class = "compact-title"
+        table_class = "compact-table"
+    elif skin_index == 2:  # ultra_compact
+        max_rows = 20
+        screen_padding = "10px 15px"
+        title_class = "ultra-compact-title"
+        table_class = "ultra-compact-table"
+    else:  # default (индекс 0)
+        max_rows = cfg.max_rows  # Берем из конфига (8)
+        screen_padding = "20px 25px"
+        title_class = ""
+        table_class = ""
+
+    # Ограничиваем количество строк в соответствии с скином
+    if len(rows) > max_rows:
+        rows = rows[:max_rows]
+
     return render_template(
         "index.html",
         rows=rows,
@@ -54,9 +78,13 @@ def index() -> str:
         time_str=now.strftime("%H:%M:%S"),
         now_epoch_ms=int(now.timestamp() * 1000),
         tz_name=cfg.display_timezone,
-        max_rows=cfg.max_rows,
         refresh_seconds=cfg.refresh_seconds,
         simple_auth_enabled=cfg.simple_auth_enable,
+        skin_index=skin_index,
+        max_rows_display=max_rows,
+        screen_padding=screen_padding,
+        title_class=title_class,
+        table_class=table_class
     )
 
 
@@ -72,6 +100,16 @@ def refresh_cache():
     """Принудительное обновление кэша"""
     cache_manager.invalidate()
     return {"status": "cache invalidated"}
+
+
+@app.route('/switch_skin')
+@require_auth
+def switch_skin():
+    """Переключение на следующий скин"""
+    current_index = session.get('skin_index', 0)
+    next_index = (current_index + 1) % 3  # Всего 3 скина (0,1,2)
+    session['skin_index'] = next_index
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
