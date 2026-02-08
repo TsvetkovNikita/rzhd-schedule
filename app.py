@@ -46,7 +46,7 @@ def index() -> str:
     """Главная страница с табло"""
     rows, err, now = cache_manager.get_rows_cached()
 
-    # Получаем текущий скин (0=default, 1=compact, 2=ultra_compact)
+    # Получаем текущий скин (0=default, 1=compact, 2=ultra_compact, 3=minimalistic)
     skin_index = session.get('skin_index', 0)
 
     # Определяем параметры для каждого скина
@@ -55,16 +55,25 @@ def index() -> str:
         screen_padding = "15px 20px"
         title_class = "compact-title"
         table_class = "compact-table"
+        screen_class = ""
     elif skin_index == 2:  # ultra_compact
         max_rows = 20
         screen_padding = "10px 15px"
         title_class = "ultra-compact-title"
         table_class = "ultra-compact-table"
+        screen_class = ""
+    elif skin_index == 3:  # minimalistic
+        max_rows = 15  # Более компактный, можно больше строк
+        screen_padding = "18px 20px"
+        title_class = "minimalistic-title"
+        table_class = "minimalistic-table"
+        screen_class = "minimalistic-screen"
     else:  # default (индекс 0)
         max_rows = cfg.max_rows  # Берем из конфига (8)
         screen_padding = "20px 25px"
         title_class = ""
         table_class = ""
+        screen_class = ""
 
     # Ограничиваем количество строк в соответствии с скином
     if len(rows) > max_rows:
@@ -84,7 +93,8 @@ def index() -> str:
         max_rows_display=max_rows,
         screen_padding=screen_padding,
         title_class=title_class,
-        table_class=table_class
+        table_class=table_class,
+        screen_class=screen_class
     )
 
 
@@ -107,7 +117,7 @@ def refresh_cache():
 def switch_skin():
     """Переключение на следующий скин"""
     current_index = session.get('skin_index', 0)
-    next_index = (current_index + 1) % 3  # Всего 3 скина (0,1,2)
+    next_index = (current_index + 1) % 4  # Всего 4 скина (0,1,2,3)
     session['skin_index'] = next_index
     return redirect(url_for('index'))
 

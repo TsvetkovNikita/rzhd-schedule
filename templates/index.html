@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="screen" style="padding: {{ screen_padding }};">
+  <div class="screen {{ screen_class }}" style="padding: {{ screen_padding }};">
     <div class="top">
       <div class="title-block {{ title_class }}">
         <div class="h1">Онлайн-табло: Саратов-1</div>
@@ -78,8 +78,8 @@
 
   <!-- Кнопка переключения скинов -->
   <div class="skin-switcher">
-    <a href="{{ url_for('switch_skin') }}" title="Сменить вид (скин {{ skin_index + 1 }}/3)">
-      <span class="skin-indicator">📺 {{ skin_index + 1 }}/3</span>
+    <a href="{{ url_for('switch_skin') }}" title="Сменить вид (скин {{ skin_index + 1 }}/4)">
+      <span class="skin-indicator">📺 {{ skin_index + 1 }}/4</span>
     </a>
   </div>
 
