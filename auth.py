@@ -1,8 +1,9 @@
+# auth.py - исправленный код
 from __future__ import annotations
 
 import ipaddress
 from functools import wraps
-from typing import Callable, List
+from typing import Callable
 from flask import request, Response, abort, session, redirect, url_for
 from config import cfg
 
@@ -64,16 +65,23 @@ class AuthManager:
 
 def require_auth(f: Callable):
     """Декоратор для защиты маршрутов"""
+    from functools import wraps
 
     @wraps(f)
     def decorated(*args, **kwargs):
         # Для простой авторизации проверяем сессию
         if cfg.simple_auth_enable:
-            if session.get('authenticated'):
+            # Отладка
+            print(f"DEBUG: Проверка аутентификации. Session: {dict(session)}")
+
+            if 'authenticated' in session and session['authenticated']:
+                print(f"DEBUG: Пользователь аутентифицирован")
                 return f(*args, **kwargs)
             else:
+                print(f"DEBUG: Пользователь НЕ аутентифицирован, перенаправление на /login")
                 return redirect(url_for('login'))
 
+        # Если простая авторизация отключена, проверяем другие методы
         auth_manager = AuthManager()
         client_ip = auth_manager.get_client_ip()
 

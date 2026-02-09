@@ -4,9 +4,29 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from config import cfg
 from auth import require_auth, AuthManager
 from cache import cache_manager
+import re
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here'  # Для сессий
+app.secret_key = 'your-secret-key-here'
+
+
+def detect_device_type():
+    """Определение типа устройства по User-Agent"""
+    user_agent = request.headers.get('User-Agent', '').lower()
+
+    # Определяем тип устройства
+    if re.search(r'mobile|android|iphone|ipod', user_agent):
+        return 'mobile'
+    elif re.search(r'tablet|ipad', user_agent) and not re.search(r'mobile', user_agent):
+        return 'tablet'
+    else:
+        return 'desktop'
+
+
+def get_screen_size_class():
+    """Определение класса размера экрана на основе куки или заголовков"""
+    # Можно добавить определение по куки или другим параметрам
+    return 'default'
 
 
 @app.before_request
@@ -46,38 +66,67 @@ def index() -> str:
     """Главная страница с табло"""
     rows, err, now = cache_manager.get_rows_cached()
 
+    # Определяем тип устройства
+    device_type = detect_device_type()
+
+    # Определяем размер экрана
+    screen_size_class = get_screen_size_class()
+
     # Получаем текущий скин (0=default, 1=compact, 2=ultra_compact, 3=minimalistic)
     skin_index = session.get('skin_index', 0)
 
-    # Определяем параметры для каждого скина
-    if skin_index == 1:  # compact
-        max_rows = 12
-        screen_padding = "15px 20px"
-        title_class = "compact-title"
-        table_class = "compact-table"
-        screen_class = ""
-    elif skin_index == 2:  # ultra_compact
-        max_rows = 20
-        screen_padding = "10px 15px"
-        title_class = "ultra-compact-title"
-        table_class = "ultra-compact-table"
-        screen_class = ""
-    elif skin_index == 3:  # minimalistic
-        max_rows = 15  # Более компактный, можно больше строк
-        screen_padding = "18px 20px"
-        title_class = "minimalistic-title"
-        table_class = "minimalistic-table"
-        screen_class = "minimalistic-screen"
-    else:  # default (индекс 0)
-        max_rows = cfg.max_rows  # Берем из конфига (8)
-        screen_padding = "20px 25px"
-        title_class = ""
-        table_class = ""
-        screen_class = ""
+    # Конфигурация для каждого скина
+    skin_configs = {
+        0: {  # default
+            'name': 'default',
+            'max_rows': cfg.max_rows,
+            'screen_padding': "20px 25px",
+            'title_class': "",
+            'table_class': "",
+            'screen_class': ""
+        },
+        1: {  # compact
+            'name': 'compact',
+            'max_rows': 12,
+            'screen_padding': "15px 20px",
+            'title_class': "compact-title",
+            'table_class': "compact-table",
+            'screen_class': ""
+        },
+        2: {  # ultra_compact
+            'name': 'ultra-compact',
+            'max_rows': 20,
+            'screen_padding': "10px 15px",
+            'title_class': "ultra-compact-title",
+            'table_class': "ultra-compact-table",
+            'screen_class': ""
+        },
+        3: {  # minimalistic
+            'name': 'minimalistic',
+            'max_rows': 15,
+            'screen_padding': "18px 20px",
+            'title_class': "minimalistic-title",
+            'table_class': "minimalistic-table",
+            'screen_class': "minimalistic-screen"
+        }
+    }
 
-    # Ограничиваем количество строк в соответствии с скином
-    if len(rows) > max_rows:
-        rows = rows[:max_rows]
+    # Получаем конфиг для текущего скина
+    config = skin_configs.get(skin_index, skin_configs[0])
+
+    # Корректируем количество строк в зависимости от устройства
+    device_row_multipliers = {
+        'mobile': 0.6,
+        'tablet': 0.8,
+        'desktop': 1.0
+    }
+
+    multiplier = device_row_multipliers.get(device_type, 1.0)
+    adjusted_max_rows = max(4, int(config['max_rows'] * multiplier))
+
+    # Ограничиваем количество строк
+    if len(rows) > adjusted_max_rows:
+        rows = rows[:adjusted_max_rows]
 
     return render_template(
         "index.html",
@@ -90,11 +139,14 @@ def index() -> str:
         refresh_seconds=cfg.refresh_seconds,
         simple_auth_enabled=cfg.simple_auth_enable,
         skin_index=skin_index,
-        max_rows_display=max_rows,
-        screen_padding=screen_padding,
-        title_class=title_class,
-        table_class=table_class,
-        screen_class=screen_class
+        max_rows_display=adjusted_max_rows,
+        screen_padding=config['screen_padding'],
+        title_class=config['title_class'],
+        table_class=config['table_class'],
+        screen_class=config['screen_class'],
+        device_type=device_type,
+        screen_size_class=screen_size_class,
+        skin_name=config['name']
     )
 
 

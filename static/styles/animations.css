@@ -1,0 +1,288 @@
+/* animations.css */
+/* Анимации и эффекты для табло */
+
+/* ======================== */
+/* АНИМАЦИЯ ПРОКРУТКИ ТЕКСТА */
+/* ======================== */
+
+/* Переменные для анимации прокрутки */
+.route-text {
+  --scroll-duration: 15s;
+  --scroll-offset: -120px;
+}
+
+/* Базовый класс для анимации прокрутки */
+.route-text.scrolling {
+  animation: scrollText var(--scroll-duration, 15s) linear infinite;
+  animation-delay: 1.5s;
+  padding-right: 60px; /* Отступ для плавного перехода */
+}
+
+/* Пауза при наведении */
+.route-text.scrolling:hover {
+  animation-play-state: paused;
+}
+
+/* Ключевые кадры анимации прокрутки */
+@keyframes scrollText {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--scroll-offset, -120px));
+  }
+}
+
+/* ======================== */
+/* АНИМАЦИИ ДЛЯ ЯЧЕЕК ТАБЛИЦЫ */
+/* ======================== */
+
+/* Плавное появление новых строк */
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Применяем анимацию к новым строкам */
+tbody tr {
+  animation: fadeInRow 0.3s ease-out forwards;
+}
+
+/* ======================== */
+/* АНИМАЦИИ ДЛЯ ВРЕМЕНИ */
+/* ======================== */
+
+/* Мигание двоеточия в времени */
+@keyframes blinkColon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Применяем к двоеточию, если оно есть в времени */
+.clock .time:contains(":")::after {
+  content: ":";
+  animation: blinkColon 2s infinite;
+}
+
+/* Плавное обновление времени */
+@keyframes timeUpdate {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 20px rgba(0, 195, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    text-shadow: 0 0 30px rgba(0, 195, 255, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: 0 0 20px rgba(0, 195, 255, 0.3);
+  }
+}
+
+/* ======================== */
+/* АНИМАЦИИ ПОДСВЕТКИ ЯЧЕЕК */
+/* ======================== */
+
+/* Подсветка при приближении времени прибытия/отправления */
+@keyframes pulseArrival {
+  0%, 100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  50% {
+    background-color: rgba(0, 255, 136, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+  }
+}
+
+@keyframes pulseDeparture {
+  0%, 100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  50% {
+    background-color: rgba(255, 68, 68, 0.1);
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+  }
+}
+
+/* Применяем пульсацию для предстоящих событий */
+.c-arr.arr.soon {
+  animation: pulseArrival 2s infinite;
+}
+
+.c-dep.dep.soon {
+  animation: pulseDeparture 2s infinite;
+}
+
+/* ======================== */
+/* АНИМАЦИИ ДЛЯ КНОПОК */
+/* ======================== */
+
+/* Анимация наведения на кнопку смены скина */
+.skin-switcher a {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skin-switcher a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Анимация появления кнопки */
+@keyframes slideInButton {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 0.15;
+    transform: translateX(0);
+  }
+}
+
+.skin-switcher {
+  animation: slideInButton 0.5s ease-out 1s forwards;
+  opacity: 0;
+}
+
+/* ======================== */
+/* АНИМАЦИИ ОБНОВЛЕНИЯ ДАННЫХ */
+/* ======================== */
+
+/* Анимация обновления данных */
+@keyframes refreshPulse {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(0, 195, 255, 0.05);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* Класс для анимации обновления строк */
+.row-updating {
+  animation: refreshPulse 1s ease-out;
+}
+
+/* ======================== */
+/* АДАПТИВНЫЕ АНИМАЦИИ */
+/* ======================== */
+
+/* Более медленная прокрутка на мобильных */
+@media (max-width: 768px) {
+  .route-text.scrolling {
+    animation-duration: calc(var(--scroll-duration, 15s) * 1.3) !important;
+    padding-right: 40px !important;
+  }
+}
+
+/* Еще медленнее на очень маленьких экранах */
+@media (max-width: 480px) {
+  .route-text.scrolling {
+    animation-duration: calc(var(--scroll-duration, 15s) * 1.5) !important;
+    padding-right: 30px !important;
+  }
+}
+
+/* Отключаем некоторые анимации на очень маленьких экранах для производительности */
+@media (max-width: 360px) {
+  .route-text.scrolling {
+    animation: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  /* Отключаем пульсацию на очень маленьких экранах */
+  .c-arr.arr.soon,
+  .c-dep.dep.soon {
+    animation: none !important;
+  }
+}
+
+/* ======================== */
+/* АНИМАЦИИ ДЛЯ ОШИБОК */
+/* ======================== */
+
+/* Анимация появления ошибки */
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.err {
+  animation: errorShake 0.5s ease-in-out;
+}
+
+/* Пульсация для сообщения об ошибке */
+@keyframes errorPulse {
+  0%, 100% {
+    background-color: rgba(255, 136, 136, 0.1);
+    border-color: rgba(255, 136, 136, 0.3);
+  }
+  50% {
+    background-color: rgba(255, 136, 136, 0.2);
+    border-color: rgba(255, 136, 136, 0.5);
+  }
+}
+
+/* ======================== */
+/* АНИМАЦИИ ДЛЯ ПУСТОГО СОСТОЯНИЯ */
+/* ======================== */
+
+/* Плавное мигание для пустого состояния */
+@keyframes emptyStatePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+}
+
+.empty-message {
+  animation: emptyStatePulse 3s ease-in-out infinite;
+}
+
+/* ======================== */
+/* АНИМАЦИИ ПЕРЕХОДА МЕЖДУ СКИНАМИ */
+/* ======================== */
+
+/* Плавное изменение размеров при переключении скинов */
+.screen,
+.title-block,
+.box,
+table,
+thead th,
+tbody td,
+.route-container,
+.route-text {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ======================== */
+/* АНИМАЦИЯ ЗАГРУЗКИ */
+/* ======================== */
+
+/* Скелетон-загрузка для пустого состояния */
+@keyframes skeletonLoading {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.06) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.06) 75%);
+  background-size: 200px 100%;
+  animation: skeletonLoading 1.5s infinite linear;
+}

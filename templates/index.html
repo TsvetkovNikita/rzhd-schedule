@@ -2,15 +2,19 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
   <meta http-equiv="refresh" content="{{ refresh_seconds }}">
   <title>Табло — Саратов-1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Подключаем стили в правильном порядке -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}">
 </head>
-<body>
+<body class="device-{{ device_type }} screen-size-{{ screen_size_class }}">
   <div class="screen {{ screen_class }}" style="padding: {{ screen_padding }};">
     <div class="top">
       <div class="title-block {{ title_class }}">
@@ -76,7 +80,7 @@
     {% endif %}
   </div>
 
-  <!-- Кнопка переключения скинов -->
+  <!-- Кнопка переключения скинов (скрыта на мобильных) -->
   <div class="skin-switcher">
     <a href="{{ url_for('switch_skin') }}" title="Сменить вид (скин {{ skin_index + 1 }}/4)">
       <span class="skin-indicator">📺 {{ skin_index + 1 }}/4</span>
@@ -109,8 +113,6 @@
 
       function render() {
         const d = new Date(ms);
-
-        // Используем локальное форматирование
         dateEl.textContent = formatDate(d);
         timeEl.textContent = formatTime(d);
       }
@@ -138,8 +140,9 @@
 
             // Рассчитываем длительность анимации в зависимости от длины текста
             const extraWidth = textWidth - containerWidth;
-            const duration = 8 + (extraWidth / 30); // Быстрее для ТВ
+            const duration = 8 + (extraWidth / 30);
 
+            // Устанавливаем CSS переменные для анимации
             textElement.style.setProperty('--scroll-duration', `${duration}s`);
             textElement.style.setProperty('--scroll-offset', `-${extraWidth}px`);
           } else {
@@ -149,9 +152,29 @@
         });
       }
 
+      // Адаптация к размеру экрана
+      function adaptToScreenSize() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // Можем добавить логику для динамического изменения CSS переменных
+        const fontSizeMultiplier = Math.min(Math.max(width / 1920, 0.8), 1.2);
+        document.documentElement.style.setProperty('--font-scale', fontSizeMultiplier);
+
+        // Пересчитываем прокрутку при изменении размера
+        setupRouteScrolling();
+      }
+
       // Запускаем при загрузке
-      window.addEventListener('load', setupRouteScrolling);
-      window.addEventListener('resize', setupRouteScrolling);
+      window.addEventListener('load', () => {
+        setupRouteScrolling();
+        adaptToScreenSize();
+      });
+
+      window.addEventListener('resize', () => {
+        setupRouteScrolling();
+        adaptToScreenSize();
+      });
 
       // Также запускаем после задержки
       setTimeout(setupRouteScrolling, 100);

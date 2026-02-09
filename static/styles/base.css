@@ -1,0 +1,285 @@
+:root {
+  --bg: #0b0f14;
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, .60);
+  --border: rgba(255, 255, 255, .08);
+  --panel: rgba(255, 255, 255, .04);
+  --head: rgba(255, 255, 255, .10);
+
+  /* Монохромные цвета для транспортного табло */
+  --arr: #00ff88;
+  --dep: #ff4444;
+  --clock-color: #00c3ff;
+
+  /* Переменные для адаптивности */
+  --screen-padding: 20px 25px;
+  --font-scale: 1;
+
+  /* Переменные для анимаций */
+  --scroll-duration: 15s;
+  --scroll-offset: -120px;
+  --animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration-fast: 0.15s;
+  --animation-duration-normal: 0.3s;
+  --animation-duration-slow: 0.5s;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Roboto Condensed', 'Roboto', Arial, sans-serif;
+  overflow: hidden;
+  font-size: calc(16px * var(--font-scale));
+}
+
+.screen {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--screen-padding);
+  box-sizing: border-box;
+  gap: 15px;
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.h1 {
+  font-size: clamp(46px, 4vw, 90px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1;
+  color: #ffffff;
+  text-transform: uppercase;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+  margin: 0;
+}
+
+.sub {
+  font-size: clamp(26px, 2vw, 40px);
+  color: var(--clock-color);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.right-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 420px;
+}
+
+.clock {
+  text-align: right;
+  padding: 0;
+  background: transparent;
+  border: none;
+  min-width: auto;
+}
+
+.clock .dt-line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.clock .date {
+  font-size: clamp(28px, 2.2vw, 44px);
+  color: var(--clock-color);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+.clock .time {
+  font-size: clamp(52px, 4.5vw, 100px);
+  color: var(--clock-color);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(0, 195, 255, 0.3);
+}
+
+.logout-btn a {
+  display: inline-block;
+  padding: 8px 14px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.logout-btn a:hover {
+  background: rgba(255, 68, 68, 0.12);
+  color: var(--dep);
+  border-color: var(--dep);
+}
+
+.table-title { display: none; }
+
+.box {
+  flex: 1;
+  min-height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+thead th {
+  background: var(--head);
+  padding: 18px 12px;
+  font-size: clamp(22px, 1.8vw, 36px);
+  font-weight: 900;
+  text-align: center;
+  border-bottom: 2px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+tbody td {
+  padding: 16px 12px;
+  font-size: clamp(28px, 2.3vw, 60px);
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, .06);
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.c-num {
+  width: 16%;
+  font-weight: 700;
+}
+.c-route {
+  width: 42%;
+  text-align: left;
+  padding-left: 20px !important;
+}
+.c-arr { width: 14%; }
+.c-dwell { width: 14%; }
+.c-dep { width: 14%; }
+
+.route-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+
+.route-text {
+  white-space: nowrap;
+  padding: 0 6px;
+  display: inline-block;
+  will-change: transform;
+  font-size: clamp(28px, 2.3vw, 60px);
+}
+
+.arr {
+  color: var(--arr);
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+}
+
+.dep {
+  color: var(--dep);
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+}
+
+.dwell {
+  color: rgba(255, 255, 255, .95);
+  font-weight: 700;
+}
+
+.empty {
+  color: rgba(255, 255, 255, .35);
+  font-weight: 600;
+}
+
+.empty-message {
+  padding: 40px !important;
+  font-size: 32px !important;
+  color: rgba(255, 255, 255, .6) !important;
+  text-align: center !important;
+}
+
+.err {
+  margin-top: 10px;
+  font-size: clamp(16px, 1.2vw, 22px);
+  color: #ff8888;
+  text-align: center;
+}
+
+/* Кнопка переключения скинов */
+.skin-switcher {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.15;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+.skin-switcher:hover {
+    opacity: 0.8;
+}
+
+.skin-switcher a {
+    display: block;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--clock-color);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s;
+}
+
+.skin-switcher a:hover {
+    background: rgba(0, 195, 255, 0.1);
+    border-color: var(--clock-color);
+}
+
+.skin-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

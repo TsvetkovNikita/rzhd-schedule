@@ -1,0 +1,217 @@
+/* Стили для compact скина */
+.compact-title .h1 {
+    font-size: clamp(36px, 3.2vw, 70px) !important;
+    margin-bottom: 5px;
+}
+
+.compact-title .sub {
+    font-size: clamp(22px, 1.8vw, 32px) !important;
+    margin-bottom: 5px;
+}
+
+.compact-table tbody td {
+    font-size: clamp(24px, 2vw, 48px) !important;
+    padding: 12px 10px !important;
+}
+
+.compact-table thead th {
+    font-size: clamp(20px, 1.6vw, 30px) !important;
+    padding: 14px 10px !important;
+}
+
+.compact-table .route-container {
+    min-height: 50px !important;
+}
+
+.compact-table .route-text {
+    font-size: clamp(24px, 2vw, 48px) !important;
+}
+
+/* Стили для ultra-compact скина */
+.ultra-compact-title .h1 {
+    font-size: clamp(28px, 2.5vw, 50px) !important;
+    margin-bottom: 2px;
+}
+
+.ultra-compact-title .sub {
+    font-size: clamp(18px, 1.5vw, 26px) !important;
+    margin-bottom: 3px;
+}
+
+.ultra-compact-table tbody td {
+    font-size: clamp(20px, 1.7vw, 36px) !important;
+    padding: 8px 6px !important;
+}
+
+.ultra-compact-table thead th {
+    font-size: clamp(18px, 1.4vw, 26px) !important;
+    padding: 10px 6px !important;
+}
+
+.ultra-compact-table .route-container {
+    min-height: 40px !important;
+}
+
+.ultra-compact-table .route-text {
+    font-size: clamp(20px, 1.7vw, 36px) !important;
+}
+
+/* Стили для minimalistic скина (4-й скин) */
+.minimalistic-title .h1 {
+    font-size: clamp(34px, 3.2vw, 72px) !important;
+    letter-spacing: .2px !important;
+    line-height: 1.05 !important;
+    text-shadow: none !important;
+    margin-bottom: 4px;
+}
+
+.minimalistic-title .sub {
+    font-size: clamp(14px, 1.15vw, 18px) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 800 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    margin-bottom: 0;
+}
+
+.minimalistic-screen {
+    padding: 18px 20px !important;
+    gap: 10px !important;
+}
+
+.minimalistic-screen .top {
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+.minimalistic-screen .right-block {
+    align-items: center !important;
+    gap: 12px !important;
+    min-width: 360px !important;
+}
+
+.minimalistic-screen .clock {
+    text-align: right !important;
+    padding: 10px 14px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    min-width: 360px !important;
+}
+
+.minimalistic-screen .clock .dt-line {
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: baseline !important;
+    gap: 14px !important;
+}
+
+.minimalistic-screen .clock .date {
+    font-size: clamp(22px, 1.75vw, 36px) !important;
+    color: #ff1f1f !important;
+    font-weight: 950 !important;
+}
+
+.minimalistic-screen .clock .time {
+    font-size: clamp(34px, 2.75vw, 64px) !important;
+    color: #ff1f1f !important;
+    font-weight: 950 !important;
+    line-height: 1.0 !important;
+    text-shadow: 0 0 10px rgba(255, 31, 31, 0.35) !important;
+}
+
+.minimalistic-table .box {
+    border-radius: 18px !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.minimalistic-table thead th {
+    background: rgba(255, 255, 255, 0.07) !important;
+    padding: 14px 10px !important;
+    font-size: clamp(20px, 1.65vw, 32px) !important;
+    font-weight: 950 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.minimalistic-table tbody td {
+    padding: 12px 10px !important;
+    font-size: clamp(26px, 2.25vw, 54px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    font-weight: 500 !important;
+}
+
+.minimalistic-table .c-num { width: 15% !important; }
+.minimalistic-table .c-route { width: 43% !important; }
+.minimalistic-table .c-arr { width: 14% !important; }
+.minimalistic-table .c-dwell { width: 14% !important; }
+.minimalistic-table .c-dep { width: 14% !important; }
+
+.minimalistic-table .route-container {
+    min-height: auto !important;
+}
+
+.minimalistic-table .route-text {
+    font-size: clamp(26px, 2.25vw, 54px) !important;
+    padding: 0 4px !important;
+}
+
+.minimalistic-table .arr {
+    color: #00e676 !important;
+    font-weight: 950 !important;
+    text-shadow: 0 0 10px rgba(0, 230, 118, 0.35) !important;
+}
+
+.minimalistic-table .dep {
+    color: #ff1f1f !important;
+    font-weight: 950 !important;
+    text-shadow: 0 0 10px rgba(255, 31, 31, 0.35) !important;
+}
+
+.minimalistic-table .dwell {
+    color: rgba(255, 255, 255, 0.92) !important;
+    font-weight: 900 !important;
+}
+
+.minimalistic-table .empty {
+    color: rgba(255, 255, 255, 0.35) !important;
+    font-weight: 800 !important;
+}
+
+.minimalistic-table .empty-message {
+    padding: 22px !important;
+    font-size: 24px !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.minimalistic-screen .err {
+    font-size: clamp(14px, 1.05vw, 18px) !important;
+    color: #ffb4b4 !important;
+}
+
+.minimalistic-screen .logout-btn a {
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+}
+
+.minimalistic-screen .logout-btn a:hover {
+    background: rgba(255, 31, 31, 0.12) !important;
+    color: #ff1f1f !important;
+    border-color: #ff1f1f !important;
+}
+
+/* Адаптация часов для компактных скинов */
+.compact-title ~ .right-block .clock .date {
+    font-size: clamp(24px, 2vw, 36px) !important;
+}
+
+.compact-title ~ .right-block .clock .time {
+    font-size: clamp(40px, 3.5vw, 70px) !important;
+}
+
+.ultra-compact-title ~ .right-block .clock .date {
+    font-size: clamp(20px, 1.8vw, 32px) !important;
+}
+
+.ultra-compact-title ~ .right-block .clock .time {
+    font-size: clamp(32px, 3vw, 60px) !important;
+}

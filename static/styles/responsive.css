@@ -1,0 +1,409 @@
+/* Ориентация экрана */
+@media (min-aspect-ratio: 16/9) {
+  .screen {
+    padding: 25px 35px;
+  }
+
+  .h1 {
+    font-size: clamp(48px, 4.5vw, 100px);
+  }
+
+  .clock .time {
+    font-size: clamp(56px, 5vw, 110px);
+  }
+
+  tbody td {
+    font-size: clamp(30px, 2.5vw, 65px);
+  }
+}
+
+/* Для очень больших экранов (4K+) */
+@media (min-width: 2560px) {
+  .screen {
+    padding: 40px 60px !important;
+  }
+
+  .h1 {
+    font-size: 100px !important;
+  }
+
+  .sub {
+    font-size: 42px !important;
+  }
+
+  .clock .date {
+    font-size: 48px !important;
+  }
+
+  .clock .time {
+    font-size: 120px !important;
+  }
+
+  thead th {
+    font-size: 40px !important;
+    padding: 22px 16px !important;
+  }
+
+  tbody td {
+    font-size: 70px !important;
+    padding: 20px 16px !important;
+  }
+
+  .route-text {
+    font-size: 70px !important;
+  }
+}
+
+/* Большие экраны (FHD) */
+@media (min-width: 1920px) {
+  .screen {
+    padding: 30px 50px;
+  }
+
+  .h1 {
+    font-size: 85px;
+  }
+
+  .sub {
+    font-size: 38px;
+  }
+
+  .clock .date {
+    font-size: 42px;
+  }
+
+  .clock .time {
+    font-size: 95px;
+  }
+
+  thead th {
+    font-size: 34px;
+  }
+
+  tbody td {
+    font-size: 58px;
+  }
+
+  /* Стили для скинов на больших экранах */
+  .compact-title .h1 {
+    font-size: 60px !important;
+  }
+
+  .compact-table tbody td {
+    font-size: 40px !important;
+  }
+
+  .ultra-compact-title .h1 {
+    font-size: 45px !important;
+  }
+
+  .ultra-compact-table tbody td {
+    font-size: 32px !important;
+  }
+
+  .minimalistic-title .h1 {
+    font-size: 72px !important;
+  }
+
+  .minimalistic-table tbody td {
+    font-size: 54px !important;
+  }
+
+  .minimalistic-screen .clock .date {
+    font-size: 36px !important;
+  }
+
+  .minimalistic-screen .clock .time {
+    font-size: 64px !important;
+  }
+}
+
+/* Ноутбуки и десктопы (1024px - 1439px) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .screen {
+    padding: 20px 25px;
+  }
+
+  .h1 {
+    font-size: 60px;
+  }
+
+  .clock .time {
+    font-size: 70px;
+  }
+
+  tbody td {
+    font-size: 40px;
+  }
+
+  .right-block {
+    min-width: 380px;
+  }
+}
+
+/* Планшеты - горизонтальная ориентация (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .screen {
+    padding: 15px 20px;
+  }
+
+  .top {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .right-block {
+    align-items: flex-start !important;
+    min-width: 100% !important;
+  }
+
+  .clock {
+    text-align: left !important;
+  }
+
+  .h1 {
+    font-size: 48px;
+  }
+
+  .sub {
+    font-size: 28px;
+  }
+
+  .clock .date {
+    font-size: 24px;
+  }
+
+  .clock .time {
+    font-size: 60px;
+  }
+
+  thead th {
+    font-size: 26px;
+    padding: 14px 10px;
+  }
+
+  tbody td {
+    font-size: 32px;
+    padding: 14px 10px;
+  }
+
+  /* Адаптируем ширину колонок для планшетов */
+  .c-num { width: 18% !important; }
+  .c-route { width: 40% !important; }
+  .c-arr, .c-dwell, .c-dep { width: 14% !important; }
+
+  .route-container {
+    min-height: 50px !important;
+  }
+}
+
+/* Планшеты - вертикальная ориентация и большие телефоны (481px - 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+  .screen {
+    padding: 12px 15px;
+  }
+
+  .h1 {
+    font-size: 36px;
+  }
+
+  .sub {
+    font-size: 24px;
+  }
+
+  .clock .date {
+    font-size: 24px;
+  }
+
+  .clock .time {
+    font-size: 48px;
+  }
+
+  thead th {
+    font-size: 20px;
+    padding: 12px 8px;
+  }
+
+  tbody td {
+    font-size: 26px;
+    padding: 12px 8px;
+  }
+
+  .c-num { width: 20% !important; }
+  .c-route { width: 38% !important; }
+  .c-arr, .c-dwell, .c-dep { width: 14% !important; }
+
+  .right-block {
+    min-width: 100% !important;
+  }
+}
+
+/* Мобильные телефоны (320px - 480px) */
+@media (max-width: 480px) {
+  .screen {
+    padding: 10px 12px;
+  }
+
+  .top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .title-block {
+    width: 100%;
+  }
+
+  .right-block {
+    width: 100%;
+    min-width: 100% !important;
+    align-items: flex-start !important;
+  }
+
+  .clock {
+    text-align: left !important;
+    width: 100%;
+  }
+
+  .h1 {
+    font-size: 32px;
+  }
+
+  .sub {
+    font-size: 20px;
+  }
+
+  .clock .date {
+    font-size: 20px;
+  }
+
+  .clock .time {
+    font-size: 42px;
+  }
+
+  thead th {
+    font-size: 16px;
+    padding: 10px 6px;
+    letter-spacing: 0;
+  }
+
+  tbody td {
+    font-size: 22px;
+    padding: 10px 6px;
+  }
+
+  .c-num { width: 22% !important; }
+  .c-route { width: 36% !important; }
+  .c-arr, .c-dwell, .c-dep { width: 14% !important; }
+
+  .skin-switcher {
+    display: none;
+  }
+
+  .route-container {
+    min-height: 40px !important;
+  }
+}
+
+/* Очень маленькие телефоны (до 360px) */
+@media (max-width: 360px) {
+  .screen {
+    padding: 8px 10px;
+  }
+
+  .h1 {
+    font-size: 28px;
+  }
+
+  .sub {
+    font-size: 18px;
+  }
+
+  .clock .date {
+    font-size: 18px;
+  }
+
+  .clock .time {
+    font-size: 36px;
+  }
+
+  thead th {
+    font-size: 14px;
+    padding: 8px 4px;
+  }
+
+  tbody td {
+    font-size: 18px;
+    padding: 8px 4px;
+  }
+
+  .c-num { width: 24% !important; }
+  .c-route { width: 34% !important; }
+  .c-arr, .c-dwell, .c-dep { width: 14% !important; }
+
+  .box {
+    border-radius: 8px !important;
+  }
+}
+
+/* Горизонтальная ориентация на мобильных */
+@media (orientation: landscape) and (max-height: 600px) {
+  .screen {
+    padding: 5px 10px !important;
+    gap: 8px !important;
+  }
+
+  .h1 {
+    font-size: 32px !important;
+  }
+
+  .sub {
+    display: none;
+  }
+
+  tbody td {
+    padding: 6px 4px !important;
+    font-size: 20px !important;
+  }
+
+  thead th {
+    padding: 8px 4px !important;
+    font-size: 18px !important;
+  }
+
+  .route-container {
+    min-height: 35px !important;
+  }
+}
+
+/* Адаптация горизонтальной прокрутки для маленьких экранов */
+@media (max-width: 767px) {
+  .box {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 700px;
+  }
+}
+
+/* Классы устройств для тонкой настройки */
+.device-mobile .screen {
+  gap: 12px !important;
+}
+
+.device-mobile .top {
+  gap: 12px !important;
+}
+
+.device-mobile .box {
+  border-radius: 10px !important;
+}
+
+.device-tablet .screen {
+  gap: 14px !important;
+}
+
+.device-tablet .top {
+  gap: 16px !important;
+}
