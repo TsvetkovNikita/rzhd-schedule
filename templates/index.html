@@ -13,6 +13,25 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}">
+  <!-- ПОЛНОЕ ОТКЛЮЧЕНИЕ СВЕЧЕНИЯ (перебивает всё) -->
+  <style>
+    /* 💥 Убираем свечение у всех цветных элементов */
+    .arr, .dep,
+    .compact-table .arr, .compact-table .dep,
+    .ultra-compact-table .arr, .ultra-compact-table .dep,
+    .minimalistic-table .arr, .minimalistic-table .dep,
+    td.arr, td.dep,
+    .c-arr.arr, .c-dep.dep,
+    /* 💥 Убираем свечение у часов (дата и время) во всех скинах */
+    .clock .time, .clock .date,
+    .minimalistic-screen .clock .time, .minimalistic-screen .clock .date,
+    .compact-title ~ .right-block .clock .time,
+    .compact-title ~ .right-block .clock .date,
+    .ultra-compact-title ~ .right-block .clock .time,
+    .ultra-compact-title ~ .right-block .clock .date {
+      text-shadow: none !important;
+    }
+  </style>
 </head>
 <body class="device-{{ device_type }} screen-size-{{ screen_size_class }}">
   <div class="screen {{ screen_class }}" style="padding: {{ screen_padding }};">
@@ -40,7 +59,7 @@
         <thead>
           <tr>
             <th class="c-num">№ поезда</th>
-            <th class="c-route">Маршрут</th>
+            <th class="c-route" style="text-align: center !important; padding-left: 0 !important;">Маршрут</th>
             <th class="c-arr">Прибытие</th>
             <th class="c-dwell">Стоянка</th>
             <th class="c-dep">Отправление</th>
@@ -95,7 +114,6 @@
       const dateEl = document.querySelector(".clock .date");
       const timeEl = document.querySelector(".clock .time");
 
-      // Форматирование даты для русского формата (дд.мм.гггг)
       function formatDate(date) {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -103,7 +121,6 @@
         return `${day}.${month}.${year}`;
       }
 
-      // Форматирование времени
       function formatTime(date) {
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -119,13 +136,11 @@
 
       render();
 
-      // Обновляем каждую секунду
       const intervalId = setInterval(() => {
         ms += 1000;
         render();
       }, 1000);
 
-      // Функция для проверки и добавления прокрутки длинных названий
       function setupRouteScrolling() {
         const routeContainers = document.querySelectorAll('.route-container');
 
@@ -134,15 +149,12 @@
           const containerWidth = container.clientWidth;
           const textWidth = textElement.scrollWidth;
 
-          // Если текст шире контейнера, добавляем анимацию прокрутки
           if (textWidth > containerWidth) {
             textElement.classList.add('scrolling');
 
-            // Рассчитываем длительность анимации в зависимости от длины текста
             const extraWidth = textWidth - containerWidth;
             const duration = 8 + (extraWidth / 30);
 
-            // Устанавливаем CSS переменные для анимации
             textElement.style.setProperty('--scroll-duration', `${duration}s`);
             textElement.style.setProperty('--scroll-offset', `-${extraWidth}px`);
           } else {
@@ -152,20 +164,16 @@
         });
       }
 
-      // Адаптация к размеру экрана
       function adaptToScreenSize() {
         const width = window.innerWidth;
         const height = window.innerHeight;
 
-        // Можем добавить логику для динамического изменения CSS переменных
         const fontSizeMultiplier = Math.min(Math.max(width / 1920, 0.8), 1.2);
         document.documentElement.style.setProperty('--font-scale', fontSizeMultiplier);
 
-        // Пересчитываем прокрутку при изменении размера
         setupRouteScrolling();
       }
 
-      // Запускаем при загрузке
       window.addEventListener('load', () => {
         setupRouteScrolling();
         adaptToScreenSize();
@@ -176,10 +184,8 @@
         adaptToScreenSize();
       });
 
-      // Также запускаем после задержки
       setTimeout(setupRouteScrolling, 100);
 
-      // Остановка при уходе со страницы
       window.addEventListener('beforeunload', () => {
         clearInterval(intervalId);
       });

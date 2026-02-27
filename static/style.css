@@ -6,12 +6,10 @@
   --panel: rgba(255, 255, 255, .04);
   --head: rgba(255, 255, 255, .10);
 
-  /* Монохромные цвета для транспортного табло */
-  --arr: #00ff88; /* ярко-зеленый для прибытия */
-  --dep: #ff4444; /* ярко-красный для отправления */
-  --clock-color: #00c3ff; /* синий для времени (видно с 10+ метров) */
+  --arr: #00ff88;
+  --dep: #ff4444;
+  --clock-color: #00c3ff;
 
-  /* Прокрутка */
   --scroll-duration: 15s;
   --scroll-offset: -120px;
 }
@@ -29,14 +27,14 @@ html, body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 20px 25px; /* больше отступов для ТВ */
+  padding: 20px 25px;
   box-sizing: border-box;
   gap: 15px;
 }
 
 .top {
   display: flex;
-  align-items: flex-start; /* выравнивание по верху */
+  align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
 }
@@ -49,19 +47,19 @@ html, body {
 }
 
 .h1 {
-  font-size: clamp(46px, 4vw, 90px); /* больше для ТВ */
+  font-size: clamp(46px, 4vw, 90px);
   font-weight: 900;
   letter-spacing: 1px;
   line-height: 1;
   color: #ffffff;
   text-transform: uppercase;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+  text-shadow: 0 0 15px rgba(255,255,255,0.15);
   margin: 0;
 }
 
 .sub {
-  font-size: clamp(26px, 2vw, 40px); /* больше для ТВ */
-  color: var(--clock-color); /* синий как у времени */
+  font-size: clamp(26px, 2vw, 40px);
+  color: var(--clock-color);
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -73,10 +71,9 @@ html, body {
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
-  min-width: 420px; /* фиксированная ширина для времени */
+  min-width: 420px;
 }
 
-/* Убрали рамку и фон у часов */
 .clock {
   text-align: right;
   padding: 0;
@@ -87,31 +84,31 @@ html, body {
 
 .clock .dt-line {
   display: flex;
-  flex-direction: column; /* дата и время вертикально */
+  flex-direction: column;
   align-items: flex-end;
-  gap: 2px; /* маленький отступ между датой и временем */
+  gap: 2px;
   white-space: nowrap;
 }
 
 .clock .date {
   font-size: clamp(28px, 2.2vw, 44px);
-  color: var(--clock-color); /* синий цвет */
+  color: var(--clock-color);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
+  /* свечение убрано */
 }
 
 .clock .time {
-  font-size: clamp(52px, 4.5vw, 100px); /* время больше даты */
-  color: var(--clock-color); /* синий цвет */
+  font-size: clamp(52px, 4.5vw, 100px);
+  color: var(--clock-color);
   font-weight: 900;
   font-variant-numeric: tabular-nums;
   line-height: 1;
   letter-spacing: 2px;
-  text-shadow: 0 0 20px rgba(0, 195, 255, 0.3);
+  /* text-shadow удалён */
 }
 
-/* logout */
 .logout-btn a {
   display: inline-block;
   padding: 8px 14px;
@@ -125,7 +122,7 @@ html, body {
 }
 
 .logout-btn a:hover {
-  background: rgba(255, 68, 68, 0.12);
+  background: rgba(255,68,68,0.12);
   color: var(--dep);
   border-color: var(--dep);
 }
@@ -135,10 +132,10 @@ html, body {
 .box {
   flex: 1;
   min-height: 0;
-  border-radius: 12px; /* меньше скругление */
+  border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.3); /* темнее фон для контраста */
+  background: rgba(0,0,0,0.3);
   display: flex;
 }
 
@@ -150,20 +147,20 @@ table {
 
 thead th {
   background: var(--head);
-  padding: 18px 12px; /* больше отступов */
-  font-size: clamp(22px, 1.8vw, 36px); /* больше для ТВ */
+  padding: 18px 12px;
+  font-size: clamp(22px, 1.8vw, 36px);
   font-weight: 900;
   text-align: center;
-  border-bottom: 2px solid var(--border); /* толще линия */
+  border-bottom: 2px solid var(--border);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 tbody td {
-  padding: 16px 12px; /* больше отступов */
-  font-size: clamp(28px, 2.3vw, 60px); /* больше для ТВ */
+  padding: 16px 12px;
+  font-size: clamp(28px, 2.3vw, 60px);
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, .06);
+  border-top: 1px solid rgba(255,255,255,.06);
   vertical-align: middle;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -172,11 +169,7 @@ tbody td {
   font-weight: 500;
 }
 
-/* Ширины колонок - оптимизированы для ТВ */
-.c-num {
-  width: 16%;
-  font-weight: 700;
-}
+.c-num { width: 16%; font-weight: 700; }
 .c-route {
   width: 42%;
   text-align: left;
@@ -186,14 +179,13 @@ tbody td {
 .c-dwell { width: 14%; }
 .c-dep { width: 14%; }
 
-/* Контейнер маршрута + прокрутка длинных названий */
 .route-container {
   position: relative;
   overflow: hidden;
   width: 100%;
   display: flex;
   align-items: center;
-  min-height: 60px; /* минимальная высота для ТВ */
+  min-height: 60px;
 }
 
 .route-text {
@@ -201,13 +193,13 @@ tbody td {
   padding: 0 6px;
   display: inline-block;
   will-change: transform;
-  font-size: clamp(28px, 2.3vw, 60px); /* тот же размер что и в ячейке */
+  font-size: clamp(28px, 2.3vw, 60px);
 }
 
 .route-text.scrolling {
-  animation: scrollText var(--scroll-duration, 15s) linear infinite;
+  animation: scrollText var(--scroll-duration,15s) linear infinite;
   animation-delay: 1.5s;
-  padding-right: 60px; /* больше отступ для ТВ */
+  padding-right: 60px;
 }
 
 .route-text.scrolling:hover {
@@ -216,449 +208,324 @@ tbody td {
 
 @keyframes scrollText {
   0% { transform: translateX(0); }
-  100% { transform: translateX(var(--scroll-offset, -120px)); }
+  100% { transform: translateX(var(--scroll-offset,-120px)); }
 }
 
-/* Подсветки времени - ярче для ТВ */
 .arr {
   color: var(--arr);
   font-weight: 900;
-  text-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
 }
-
 .dep {
   color: var(--dep);
   font-weight: 900;
-  text-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
 }
-
 .dwell {
-  color: rgba(255, 255, 255, .95);
+  color: rgba(255,255,255,.95);
   font-weight: 700;
 }
-
 .empty {
-  color: rgba(255, 255, 255, .35);
+  color: rgba(255,255,255,.35);
   font-weight: 600;
 }
 
 .empty-message {
-  padding: 40px !important; /* больше для ТВ */
-  font-size: 32px !important; /* больше для ТВ */
-  color: rgba(255, 255, 255, .6) !important;
+  padding: 40px !important;
+  font-size: 32px !important;
+  color: rgba(255,255,255,.6) !important;
   text-align: center !important;
 }
 
 .err {
   margin-top: 10px;
-  font-size: clamp(16px, 1.2vw, 22px);
+  font-size: clamp(16px,1.2vw,22px);
   color: #ff8888;
   text-align: center;
 }
 
-/* Оптимизация для горизонтальной ориентации телевизора */
 @media (min-aspect-ratio: 16/9) {
-  .screen {
-    padding: 25px 35px;
-  }
-
-  .h1 {
-    font-size: clamp(48px, 4.5vw, 100px);
-  }
-
-  .clock .time {
-    font-size: clamp(56px, 5vw, 110px);
-  }
-
-  tbody td {
-    font-size: clamp(30px, 2.5vw, 65px);
-  }
+  .screen { padding: 25px 35px; }
+  .h1 { font-size: clamp(48px,4.5vw,100px); }
+  .clock .time { font-size: clamp(56px,5vw,110px); }
+  tbody td { font-size: clamp(30px,2.5vw,65px); }
 }
 
-/* Для очень больших экранов */
 @media (min-width: 1920px) {
-  .screen {
-    padding: 30px 50px;
-  }
-
-  .h1 {
-    font-size: 85px;
-  }
-
-  .sub {
-    font-size: 38px;
-  }
-
-  .clock .date {
-    font-size: 42px;
-  }
-
-  .clock .time {
-    font-size: 95px;
-  }
-
-  thead th {
-    font-size: 34px;
-  }
-
-  tbody td {
-    font-size: 58px;
-  }
+  .screen { padding: 30px 50px; }
+  .h1 { font-size: 85px; }
+  .sub { font-size: 38px; }
+  .clock .date { font-size: 42px; }
+  .clock .time { font-size: 95px; }
+  thead th { font-size: 34px; }
+  tbody td { font-size: 58px; }
 }
 
-/* Кнопка переключения скинов */
 .skin-switcher {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    opacity: 0.15;
-    transition: opacity 0.3s;
-    z-index: 1000;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0.15;
+  transition: opacity 0.3s;
+  z-index: 1000;
 }
-
-.skin-switcher:hover {
-    opacity: 0.8;
-}
-
+.skin-switcher:hover { opacity: 0.8; }
 .skin-switcher a {
-    display: block;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--clock-color);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    backdrop-filter: blur(5px);
-    transition: all 0.2s;
+  display: block;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--clock-color);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  transition: all 0.2s;
 }
-
 .skin-switcher a:hover {
-    background: rgba(0, 195, 255, 0.1);
-    border-color: var(--clock-color);
+  background: rgba(0,195,255,0.1);
+  border-color: var(--clock-color);
 }
+.skin-indicator { display: flex; align-items: center; gap: 5px; }
 
-.skin-indicator {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* Стили для compact скина */
+/* compact скин */
 .compact-title .h1 {
-    font-size: clamp(36px, 3.2vw, 70px) !important;
-    margin-bottom: 5px;
+  font-size: clamp(36px,3.2vw,70px) !important;
+  margin-bottom: 5px;
 }
-
 .compact-title .sub {
-    font-size: clamp(22px, 1.8vw, 32px) !important;
-    margin-bottom: 5px;
+  font-size: clamp(22px,1.8vw,32px) !important;
+  margin-bottom: 5px;
 }
-
 .compact-table tbody td {
-    font-size: clamp(24px, 2vw, 48px) !important;
-    padding: 12px 10px !important;
+  font-size: clamp(24px,2vw,48px) !important;
+  padding: 12px 10px !important;
 }
-
 .compact-table thead th {
-    font-size: clamp(20px, 1.6vw, 30px) !important;
-    padding: 14px 10px !important;
+  font-size: clamp(20px,1.6vw,30px) !important;
+  padding: 14px 10px !important;
 }
+.compact-table .route-container { min-height: 50px !important; }
+.compact-table .route-text { font-size: clamp(24px,2vw,48px) !important; }
 
-.compact-table .route-container {
-    min-height: 50px !important;
-}
-
-.compact-table .route-text {
-    font-size: clamp(24px, 2vw, 48px) !important;
-}
-
-/* Стили для ultra-compact скина */
+/* ultra‑compact скин */
 .ultra-compact-title .h1 {
-    font-size: clamp(28px, 2.5vw, 50px) !important;
-    margin-bottom: 2px;
+  font-size: clamp(28px,2.5vw,50px) !important;
+  margin-bottom: 2px;
 }
-
 .ultra-compact-title .sub {
-    font-size: clamp(18px, 1.5vw, 26px) !important;
-    margin-bottom: 3px;
+  font-size: clamp(18px,1.5vw,26px) !important;
+  margin-bottom: 3px;
 }
-
 .ultra-compact-table tbody td {
-    font-size: clamp(20px, 1.7vw, 36px) !important;
-    padding: 8px 6px !important;
+  font-size: clamp(20px,1.7vw,36px) !important;
+  padding: 8px 6px !important;
 }
-
 .ultra-compact-table thead th {
-    font-size: clamp(18px, 1.4vw, 26px) !important;
-    padding: 10px 6px !important;
+  font-size: clamp(18px,1.4vw,26px) !important;
+  padding: 10px 6px !important;
 }
+.ultra-compact-table .route-container { min-height: 40px !important; }
+.ultra-compact-table .route-text { font-size: clamp(20px,1.7vw,36px) !important; }
 
-.ultra-compact-table .route-container {
-    min-height: 40px !important;
-}
-
-.ultra-compact-table .route-text {
-    font-size: clamp(20px, 1.7vw, 36px) !important;
-}
-
-/* Стили для minimalistic скина (4-й скин) */
+/* minimalistic скин */
 .minimalistic-title .h1 {
-    font-size: clamp(34px, 3.2vw, 72px) !important;
-    letter-spacing: .2px !important;
-    line-height: 1.05 !important;
-    text-shadow: none !important;
-    margin-bottom: 4px;
+  font-size: clamp(34px,3.2vw,72px) !important;
+  letter-spacing: .2px !important;
+  line-height: 1.05 !important;
+  text-shadow: none !important;
+  margin-bottom: 4px;
 }
-
 .minimalistic-title .sub {
-    font-size: clamp(14px, 1.15vw, 18px) !important;
-    color: rgba(255, 255, 255, 0.7) !important;
-    font-weight: 800 !important;
-    letter-spacing: normal !important;
-    text-transform: none !important;
-    margin-bottom: 0;
+  font-size: clamp(14px,1.15vw,18px) !important;
+  color: rgba(255,255,255,0.7) !important;
+  font-weight: 800 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  margin-bottom: 0;
 }
-
 .minimalistic-screen {
-    padding: 18px 20px !important;
-    gap: 10px !important;
+  padding: 18px 20px !important;
+  gap: 10px !important;
 }
-
-.minimalistic-screen .top {
-    align-items: center !important;
-    gap: 14px !important;
-}
-
+.minimalistic-screen .top { align-items: center !important; gap: 14px !important; }
 .minimalistic-screen .right-block {
-    align-items: center !important;
-    gap: 12px !important;
-    min-width: 360px !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 360px !important;
 }
-
 .minimalistic-screen .clock {
-    text-align: right !important;
-    padding: 10px 14px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 16px !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    min-width: 360px !important;
+  text-align: right !important;
+  padding: 10px 14px !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 16px !important;
+  background: rgba(255,255,255,0.04) !important;
+  min-width: 360px !important;
 }
-
 .minimalistic-screen .clock .dt-line {
-    flex-direction: row !important;
-    justify-content: flex-end !important;
-    align-items: baseline !important;
-    gap: 14px !important;
+  flex-direction: row !important;
+  justify-content: flex-end !important;
+  align-items: baseline !important;
+  gap: 14px !important;
 }
-
 .minimalistic-screen .clock .date {
-    font-size: clamp(22px, 1.75vw, 36px) !important;
-    color: #ff1f1f !important;
-    font-weight: 950 !important;
+  font-size: clamp(22px,1.75vw,36px) !important;
+  color: #ff1f1f !important;
+  font-weight: 950 !important;
+  /* свечение убрано */
 }
-
 .minimalistic-screen .clock .time {
-    font-size: clamp(34px, 2.75vw, 64px) !important;
-    color: #ff1f1f !important;
-    font-weight: 950 !important;
-    line-height: 1.0 !important;
-    text-shadow: 0 0 10px rgba(255, 31, 31, 0.35) !important;
+  font-size: clamp(34px,2.75vw,64px) !important;
+  color: #ff1f1f !important;
+  font-weight: 950 !important;
+  line-height: 1.0 !important;
+  /* text-shadow удалён */
 }
-
 .minimalistic-table .box {
-    border-radius: 18px !important;
-    background: rgba(255, 255, 255, 0.02) !important;
+  border-radius: 18px !important;
+  background: rgba(255,255,255,0.02) !important;
 }
-
 .minimalistic-table thead th {
-    background: rgba(255, 255, 255, 0.07) !important;
-    padding: 14px 10px !important;
-    font-size: clamp(20px, 1.65vw, 32px) !important;
-    font-weight: 950 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255,255,255,0.07) !important;
+  padding: 14px 10px !important;
+  font-size: clamp(20px,1.65vw,32px) !important;
+  font-weight: 950 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important;
 }
-
 .minimalistic-table tbody td {
-    padding: 12px 10px !important;
-    font-size: clamp(26px, 2.25vw, 54px) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-    font-weight: 500 !important;
+  padding: 12px 10px !important;
+  font-size: clamp(26px,2.25vw,54px) !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+  font-weight: 500 !important;
 }
-
 .minimalistic-table .c-num { width: 15% !important; }
 .minimalistic-table .c-route { width: 43% !important; }
 .minimalistic-table .c-arr { width: 14% !important; }
 .minimalistic-table .c-dwell { width: 14% !important; }
 .minimalistic-table .c-dep { width: 14% !important; }
-
-.minimalistic-table .route-container {
-    min-height: auto !important;
-}
-
+.minimalistic-table .route-container { min-height: auto !important; }
 .minimalistic-table .route-text {
-    font-size: clamp(26px, 2.25vw, 54px) !important;
-    padding: 0 4px !important;
+  font-size: clamp(26px,2.25vw,54px) !important;
+  padding: 0 4px !important;
 }
-
-.minimalistic-table .route-text.scrolling {
-    padding-right: 40px !important;
-}
-
+.minimalistic-table .route-text.scrolling { padding-right: 40px !important; }
 .minimalistic-table .arr {
-    color: #00e676 !important;
-    font-weight: 950 !important;
-    text-shadow: 0 0 10px rgba(0, 230, 118, 0.35) !important;
+  color: #00e676 !important;
+  font-weight: 950 !important;
 }
-
 .minimalistic-table .dep {
-    color: #ff1f1f !important;
-    font-weight: 950 !important;
-    text-shadow: 0 0 10px rgba(255, 31, 31, 0.35) !important;
+  color: #ff1f1f !important;
+  font-weight: 950 !important;
 }
-
 .minimalistic-table .dwell {
-    color: rgba(255, 255, 255, 0.92) !important;
-    font-weight: 900 !important;
+  color: rgba(255,255,255,0.92) !important;
+  font-weight: 900 !important;
 }
-
 .minimalistic-table .empty {
-    color: rgba(255, 255, 255, 0.35) !important;
-    font-weight: 800 !important;
+  color: rgba(255,255,255,0.35) !important;
+  font-weight: 800 !important;
 }
-
 .minimalistic-table .empty-message {
-    padding: 22px !important;
-    font-size: 24px !important;
-    color: rgba(255, 255, 255, 0.75) !important;
+  padding: 22px !important;
+  font-size: 24px !important;
+  color: rgba(255,255,255,0.75) !important;
 }
-
 .minimalistic-screen .err {
-    font-size: clamp(14px, 1.05vw, 18px) !important;
-    color: #ffb4b4 !important;
+  font-size: clamp(14px,1.05vw,18px) !important;
+  color: #ffb4b4 !important;
 }
-
 .minimalistic-screen .logout-btn a {
-    padding: 10px 14px !important;
-    border-radius: 12px !important;
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
 }
-
 .minimalistic-screen .logout-btn a:hover {
-    background: rgba(255, 31, 31, 0.12) !important;
-    color: #ff1f1f !important;
-    border-color: #ff1f1f !important;
+  background: rgba(255,31,31,0.12) !important;
+  color: #ff1f1f !important;
+  border-color: #ff1f1f !important;
 }
 
 /* Адаптация часов для компактных скинов */
 .compact-title ~ .right-block .clock .date {
-    font-size: clamp(24px, 2vw, 36px) !important;
+  font-size: clamp(24px,2vw,36px) !important;
 }
-
 .compact-title ~ .right-block .clock .time {
-    font-size: clamp(40px, 3.5vw, 70px) !important;
+  font-size: clamp(40px,3.5vw,70px) !important;
 }
-
 .ultra-compact-title ~ .right-block .clock .date {
-    font-size: clamp(20px, 1.8vw, 32px) !important;
+  font-size: clamp(20px,1.8vw,32px) !important;
 }
-
 .ultra-compact-title ~ .right-block .clock .time {
-    font-size: clamp(32px, 3vw, 60px) !important;
+  font-size: clamp(32px,3vw,60px) !important;
 }
 
-/* Для очень больших экранов - дополнительные настройки */
 @media (min-width: 1920px) {
-    .compact-title .h1 {
-        font-size: 60px !important;
-    }
-
-    .compact-table tbody td {
-        font-size: 40px !important;
-    }
-
-    .ultra-compact-title .h1 {
-        font-size: 45px !important;
-    }
-
-    .ultra-compact-table tbody td {
-        font-size: 32px !important;
-    }
-
-    .minimalistic-title .h1 {
-        font-size: 72px !important;
-    }
-
-    .minimalistic-table tbody td {
-        font-size: 54px !important;
-    }
-
-    .minimalistic-screen .clock .date {
-        font-size: 36px !important;
-    }
-
-    .minimalistic-screen .clock .time {
-        font-size: 64px !important;
-    }
+  .compact-title .h1 { font-size: 60px !important; }
+  .compact-table tbody td { font-size: 40px !important; }
+  .ultra-compact-title .h1 { font-size: 45px !important; }
+  .ultra-compact-table tbody td { font-size: 32px !important; }
+  .minimalistic-title .h1 { font-size: 72px !important; }
+  .minimalistic-table tbody td { font-size: 54px !important; }
+  .minimalistic-screen .clock .date { font-size: 36px !important; }
+  .minimalistic-screen .clock .time { font-size: 64px !important; }
 }
-/* Адаптация для сверхбольших экранов (4K и выше) */
+
 @media (min-width: 2560px) {
-    .screen {
-        padding: 60px 100px;  /* увеличиваем внутренние отступы */
-    }
+  .screen { padding: 60px 100px; }
+  .h1 { font-size: clamp(90px,5vw,160px); }
+  .sub { font-size: clamp(48px,2.8vw,80px); }
+  .clock .date { font-size: clamp(48px,2.8vw,80px); }
+  .clock .time {
+    font-size: clamp(110px,7vw,200px);
+    /* text-shadow удалён */
+  }
+  .right-block { min-width: 800px; }
+  thead th { font-size: clamp(48px,2.8vw,80px); padding: 30px 20px; }
+  tbody td { font-size: clamp(60px,3.5vw,110px); padding: 28px 20px; }
+  .route-text { font-size: clamp(60px,3.5vw,110px); }
+  .compact-table tbody td,
+  .compact-table .route-text { font-size: clamp(48px,3vw,90px) !important; }
+  .ultra-compact-table tbody td,
+  .ultra-compact-table .route-text { font-size: clamp(40px,2.5vw,70px) !important; }
+  .minimalistic-table tbody td,
+  .minimalistic-table .route-text { font-size: clamp(54px,3.2vw,100px) !important; }
+  .minimalistic-screen .clock .time { font-size: clamp(70px,4.5vw,140px) !important; }
+}
 
-    .h1 {
-        font-size: clamp(90px, 5vw, 160px); /* больше максимальный размер */
-    }
-
-    .sub {
-        font-size: clamp(48px, 2.8vw, 80px);
-    }
-
-    .clock .date {
-        font-size: clamp(48px, 2.8vw, 80px);
-    }
-
-    .clock .time {
-        font-size: clamp(110px, 7vw, 200px); /* время должно быть крупным */
-        text-shadow: 0 0 30px rgba(0, 195, 255, 0.4);
-    }
-
-    .right-block {
-        min-width: 800px; /* расширяем блок с часами */
-    }
-
-    thead th {
-        font-size: clamp(48px, 2.8vw, 80px);
-        padding: 30px 20px;
-    }
-
-    tbody td {
-        font-size: clamp(60px, 3.5vw, 110px);
-        padding: 28px 20px;
-    }
-
-    .route-text {
-        font-size: clamp(60px, 3.5vw, 110px);
-    }
-
-    /* Для скинов тоже нужно увеличить размеры, если они используются */
-    .compact-table tbody td,
-    .compact-table .route-text {
-        font-size: clamp(48px, 3vw, 90px) !important;
-    }
-
-    .ultra-compact-table tbody td,
-    .ultra-compact-table .route-text {
-        font-size: clamp(40px, 2.5vw, 70px) !important;
-    }
-
-    .minimalistic-table tbody td,
-    .minimalistic-table .route-text {
-        font-size: clamp(54px, 3.2vw, 100px) !important;
-    }
-
-    .minimalistic-screen .clock .time {
-        font-size: clamp(70px, 4.5vw, 140px) !important;
-    }
+/* ГАРАНТИРОВАННОЕ ЦЕНТРИРОВАНИЕ ЗАГОЛОВКОВ */
+thead th,
+.compact-table thead th,
+.ultra-compact-table thead th,
+.minimalistic-table thead th {
+    text-align: center !important;
+}
+thead th.c-route,
+.compact-table thead th.c-route,
+.ultra-compact-table thead th.c-route,
+.minimalistic-table thead th.c-route,
+table thead tr th.c-route {
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+tbody td.c-route,
+.compact-table tbody td.c-route,
+.ultra-compact-table tbody td.c-route,
+.minimalistic-table tbody td.c-route {
+    text-align: left !important;
+    padding-left: 20px !important;
+}
+table thead tr th.c-route,
+body .screen .box table thead tr th.c-route,
+.compact-table thead tr th.c-route,
+.ultra-compact-table thead tr th.c-route,
+.minimalistic-table thead tr th.c-route {
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+th.c-route,
+thead th.c-route,
+tr th.c-route {
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
