@@ -601,3 +601,64 @@ tbody td {
         font-size: 64px !important;
     }
 }
+/* Адаптация для сверхбольших экранов (4K и выше) */
+@media (min-width: 2560px) {
+    .screen {
+        padding: 60px 100px;  /* увеличиваем внутренние отступы */
+    }
+
+    .h1 {
+        font-size: clamp(90px, 5vw, 160px); /* больше максимальный размер */
+    }
+
+    .sub {
+        font-size: clamp(48px, 2.8vw, 80px);
+    }
+
+    .clock .date {
+        font-size: clamp(48px, 2.8vw, 80px);
+    }
+
+    .clock .time {
+        font-size: clamp(110px, 7vw, 200px); /* время должно быть крупным */
+        text-shadow: 0 0 30px rgba(0, 195, 255, 0.4);
+    }
+
+    .right-block {
+        min-width: 800px; /* расширяем блок с часами */
+    }
+
+    thead th {
+        font-size: clamp(48px, 2.8vw, 80px);
+        padding: 30px 20px;
+    }
+
+    tbody td {
+        font-size: clamp(60px, 3.5vw, 110px);
+        padding: 28px 20px;
+    }
+
+    .route-text {
+        font-size: clamp(60px, 3.5vw, 110px);
+    }
+
+    /* Для скинов тоже нужно увеличить размеры, если они используются */
+    .compact-table tbody td,
+    .compact-table .route-text {
+        font-size: clamp(48px, 3vw, 90px) !important;
+    }
+
+    .ultra-compact-table tbody td,
+    .ultra-compact-table .route-text {
+        font-size: clamp(40px, 2.5vw, 70px) !important;
+    }
+
+    .minimalistic-table tbody td,
+    .minimalistic-table .route-text {
+        font-size: clamp(54px, 3.2vw, 100px) !important;
+    }
+
+    .minimalistic-screen .clock .time {
+        font-size: clamp(70px, 4.5vw, 140px) !important;
+    }
+}
