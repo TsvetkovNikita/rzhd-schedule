@@ -226,10 +226,12 @@
         function qsGet(name) {
             var qs = (location && location.search) ? location.search.substring(1) : "";
             if (!qs) return null;
+
             var parts = qs.split("&");
             for (var i = 0; i < parts.length; i++) {
                 var p = parts[i];
                 if (!p) continue;
+
                 var kv = p.split("=");
                 var k = decodeURIComponent(kv[0] || "");
                 if (k !== name) continue;
@@ -241,11 +243,19 @@
         function isDebugEnabled() {
             var v = qsGet("debug");
             if (v === null) return false;
-            if (v === "" || v === "1" || v === "true" || v === "yes") return true;
-            return false;
+            return (v === "" || v === "1" || v === "true" || v === "yes");
         }
 
-        var debugEnabled = isDebugEnabled();
+        function isMiniDebugEnabled() {
+            var v = qsGet("d");
+            if (v === null) return false;
+            return (v === "" || v === "1" || v === "true" || v === "yes");
+        }
+
+        var debugFullEnabled = isDebugEnabled();
+        var debugMiniEnabled = isMiniDebugEnabled();
+        var debugEnabled = debugFullEnabled || debugMiniEnabled;
+
         var lastDebugDx = 0;
 
         function debugDisableMetaRefresh() {
@@ -254,8 +264,7 @@
             if (meta && meta.parentNode) meta.parentNode.removeChild(meta);
         }
 
-        // При debug — "выровнять окно": пытаемся центрировать экран в текущем viewport
-        // (полезно при разных браузерах/движках на TV).
+        // При debug — "выровнять окно": центрируем .screen в текущем viewport
         function debugAutoCenter() {
             if (!debugEnabled) return;
             if (!screenEl) return;
@@ -266,25 +275,19 @@
 
             var rect = screenEl.getBoundingClientRect();
             var vw = window.innerWidth || 0;
-
-            // если экран уже ровно во весь viewport — ничего не делаем
             if (!vw || rect.width === 0) return;
 
             var dx = 0;
 
             if (rect.width < vw) {
-                // центрируем, если вдруг экран меньше viewport
                 dx = ((vw - rect.width) / 2) - rect.left;
             } else {
-                // если есть переполнение — центрируем переполнение
                 var leftOverflow = Math.max(0, -rect.left);
                 var rightOverflow = Math.max(0, rect.right - vw);
                 dx = (leftOverflow - rightOverflow) / 2;
             }
 
             dx = Math.round(dx);
-
-            // небольшой порог, чтобы не дёргалось из-за 1px округлений
             if (Math.abs(dx) <= 1) dx = 0;
 
             lastDebugDx = dx;
@@ -298,12 +301,19 @@
 
             document.body.classList.add("debug-mode");
 
+            var miniOnly = (debugMiniEnabled && !debugFullEnabled);
+
             var el = document.createElement('div');
-            el.style.cssText =
-                'position:fixed;right:80px;top:80px;z-index:999999;' +
-                'background:rgba(0,0,0,.72);color:#fff;padding:10px 12px;' +
-                'border-radius:10px;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial;' +
-                'white-space:pre;pointer-events:none';
+            el.style.cssText = miniOnly
+                ? ('position:fixed;left:80px;top:80px;z-index:999999;' +
+                    'background:rgba(0,0,0,.72);color:#fff;padding:8px 10px;' +
+                    'border-radius:10px;font:22px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial;' +
+                    'white-space:pre;pointer-events:none')
+                : ('position:fixed;right:80px;top:80px;z-index:999999;' +
+                    'background:rgba(0,0,0,.72);color:#fff;padding:10px 12px;' +
+                    'border-radius:10px;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial;' +
+                    'white-space:pre;pointer-events:none');
+
             document.body.appendChild(el);
 
             function fmt() {
@@ -311,13 +321,19 @@
                 var h = window.innerHeight || 0;
                 var dpr = window.devicePixelRatio || 1;
 
+                if (miniOnly) {
+                    el.textContent = w + "×" + h;
+                    return;
+                }
+
                 var sw = (window.screen && typeof window.screen.width === "number") ? window.screen.width : "?";
                 var sh = (window.screen && typeof window.screen.height === "number") ? window.screen.height : "?";
 
                 var vv = window.visualViewport;
                 var vvLine = "";
                 if (vv && typeof vv.width === "number" && typeof vv.height === "number") {
-                    vvLine = "visualViewport: " + Math.round(vv.width) + "×" + Math.round(vv.height) +
+                    vvLine =
+                        "visualViewport: " + Math.round(vv.width) + "×" + Math.round(vv.height) +
                         "  scale:" + (vv.scale || 1) + "\n";
                 }
 
@@ -344,16 +360,15 @@
             }
         }
 
-        // старт
+        // старт часов
         renderClock();
         var intervalId = setInterval(function () {
             ms += 1000;
             renderClock();
         }, 1000);
 
-        document.addEventListener('DOMContentLoaded', function () {
+        function init() {
             debugDisableMetaRefresh();
-
             setupRouteScrolling();
             adaptToScreenSize();
 
@@ -364,7 +379,13 @@
                 setupRouteScrolling();
                 debugAutoCenter();
             }, 100);
-        });
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
 
         window.addEventListener('resize', function () {
             setupRouteScrolling();
