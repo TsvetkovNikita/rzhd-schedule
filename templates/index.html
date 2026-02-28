@@ -1,195 +1,270 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
-  <meta http-equiv="refresh" content="{{ refresh_seconds }}">
-  <title>Табло — Саратов-1</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <!-- Подключаем стили в правильном порядке -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}">
-  <!-- ПОЛНОЕ ОТКЛЮЧЕНИЕ СВЕЧЕНИЯ (перебивает всё) -->
-  <style>
-    /* 💥 Убираем свечение у всех цветных элементов */
-    .arr, .dep,
-    .compact-table .arr, .compact-table .dep,
-    .ultra-compact-table .arr, .ultra-compact-table .dep,
-    .minimalistic-table .arr, .minimalistic-table .dep,
-    td.arr, td.dep,
-    .c-arr.arr, .c-dep.dep,
-    /* 💥 Убираем свечение у часов (дата и время) во всех скинах */
-    .clock .time, .clock .date,
-    .minimalistic-screen .clock .time, .minimalistic-screen .clock .date,
-    .compact-title ~ .right-block .clock .time,
-    .compact-title ~ .right-block .clock .date,
-    .ultra-compact-title ~ .right-block .clock .time,
-    .ultra-compact-title ~ .right-block .clock .date {
-      text-shadow: none !important;
-    }
-  </style>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
+    <meta http-equiv="refresh" content="{{ refresh_seconds }}">
+    <title>Табло — Саратов-1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap"
+          rel="stylesheet">
+    <!-- Подключаем стили в правильном порядке -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}">
+    <!-- ПОЛНОЕ ОТКЛЮЧЕНИЕ СВЕЧЕНИЯ (перебивает всё) -->
+    <style>
+        /* 💥 Убираем свечение у всех цветных элементов */
+        .arr, .dep,
+        .compact-table .arr, .compact-table .dep,
+        .ultra-compact-table .arr, .ultra-compact-table .dep,
+        .minimalistic-table .arr, .minimalistic-table .dep,
+        td.arr, td.dep,
+        .c-arr.arr, .c-dep.dep,
+            /* 💥 Убираем свечение у часов (дата и время) во всех скинах */
+        .clock .time, .clock .date,
+        .minimalistic-screen .clock .time, .minimalistic-screen .clock .date,
+        .compact-title ~ .right-block .clock .time,
+        .compact-title ~ .right-block .clock .date,
+        .ultra-compact-title ~ .right-block .clock .time,
+        .ultra-compact-title ~ .right-block .clock .date {
+            text-shadow: none !important;
+        }
+    </style>
 </head>
 <body class="device-{{ device_type }} screen-size-{{ screen_size_class }}">
-  <div class="screen {{ screen_class }}" style="padding: {{ screen_padding }};">
+<div class="screen {{ screen_class }}" style="padding: {{ screen_padding }};">
     <div class="top">
-      <div class="title-block {{ title_class }}">
-        <div class="h1">Онлайн-табло: Саратов-1</div>
-        <div class="sub">Саратовское время</div>
-      </div>
-
-      <div class="right-block">
-        <div class="clock">
-          <div class="dt-line">
-            <span class="date">{{ date_str }}</span>
-            <span class="time">{{ time_str }}</span>
-          </div>
+        <div class="title-block {{ title_class }}">
+            <div class="h1">Онлайн-табло: Саратов-1</div>
+            <div class="sub">Саратовское время</div>
         </div>
 
-        {% if simple_auth_enabled %}
-        {% endif %}
-      </div>
+        <div class="right-block">
+            <div class="clock">
+                <div class="dt-line">
+                    <span class="date">{{ date_str }}</span>
+                    <span class="time">{{ time_str }}</span>
+                </div>
+            </div>
+
+            {% if simple_auth_enabled %}
+            {% endif %}
+        </div>
     </div>
 
     <div class="box {{ table_class }}">
-      <table>
-        <thead>
-          <tr>
-            <th class="c-num">№ поезда</th>
-            <th class="c-route" style="text-align: center !important; padding-left: 0 !important;">Маршрут</th>
-            <th class="c-arr">Прибытие</th>
-            <th class="c-dwell">Стоянка</th>
-            <th class="c-dep">Отправление</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if rows %}
-            {% for r in rows %}
-              {% set a = r.arrival_str() %}
-              {% set d = r.departure_str() %}
-              {% set w = r.dwell_str() %}
-              <tr>
-                <td class="c-num"><b>{{ r.number }}</b></td>
-                <td class="c-route">
-                  <div class="route-container">
-                    <div class="route-text">{{ r.title }}</div>
-                  </div>
-                </td>
-                <td class="c-arr {{ 'arr' if a != '—' else 'empty' }}">{{ a }}</td>
-                <td class="c-dwell {{ 'dwell' if w != '—' else 'empty' }}">{{ w }}</td>
-                <td class="c-dep {{ 'dep' if d != '—' else 'empty' }}">{{ d }}</td>
-              </tr>
-            {% endfor %}
-          {% else %}
+        <table>
+            <thead>
             <tr>
-              <td colspan="5" class="empty-message">
-                Нет поездов в ближайшее время
-              </td>
+                <th class="c-num">№ поезда</th>
+                <th class="c-route" style="text-align: center !important; padding-left: 0 !important;">Маршрут</th>
+                <th class="c-arr">Прибытие</th>
+                <th class="c-dwell">Стоянка</th>
+                <th class="c-dep">Отправление</th>
             </tr>
-          {% endif %}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+            {% if rows %}
+                {% for r in rows %}
+                    {% set a = r.arrival_str() %}
+                    {% set d = r.departure_str() %}
+                    {% set w = r.dwell_str() %}
+                    <tr>
+                        <td class="c-num"><b>{{ r.number }}</b></td>
+                        <td class="c-route">
+                            <div class="route-container">
+                                <div class="route-text">{{ r.title }}</div>
+                            </div>
+                        </td>
+                        <td class="c-arr {{ 'arr' if a != '—' else 'empty' }}">{{ a }}</td>
+                        <td class="c-dwell {{ 'dwell' if w != '—' else 'empty' }}">{{ w }}</td>
+                        <td class="c-dep {{ 'dep' if d != '—' else 'empty' }}">{{ d }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="empty-message">
+                        Нет поездов в ближайшее время
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
     </div>
 
     {% if err %}
-      <div class="err">Ошибка обновления данных: {{ err }}</div>
+        <div class="err">Ошибка обновления данных: {{ err }}</div>
     {% endif %}
-  </div>
+</div>
 
-  <!-- Кнопка переключения скинов (скрыта на мобильных) -->
-  <div class="skin-switcher">
+<!-- Кнопка переключения скинов (скрыта на мобильных) -->
+<div class="skin-switcher">
     <a href="{{ url_for('switch_skin') }}" title="Сменить вид (скин {{ skin_index + 1 }}/4)">
-      <span class="skin-indicator">📺 {{ skin_index + 1 }}/4</span>
+        <span class="skin-indicator">📺 {{ skin_index + 1 }}/4</span>
     </a>
-  </div>
+</div>
 
-  <script>
+<script>
     (() => {
-      const tz = "{{ tz_name }}";
-      let ms = {{ now_epoch_ms }};
+        const tz = "{{ tz_name }}";
+        let ms = {{ now_epoch_ms }};
 
-      const dateEl = document.querySelector(".clock .date");
-      const timeEl = document.querySelector(".clock .time");
+        const dateEl = document.querySelector(".clock .date");
+        const timeEl = document.querySelector(".clock .time");
 
-      function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}.${month}.${year}`;
-      }
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
 
-      function formatTime(date) {
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${hours}:${minutes}:${seconds}`;
-      }
+        function formatTime(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
 
-      function render() {
-        const d = new Date(ms);
-        dateEl.textContent = formatDate(d);
-        timeEl.textContent = formatTime(d);
-      }
+        function render() {
+            const d = new Date(ms);
+            dateEl.textContent = formatDate(d);
+            timeEl.textContent = formatTime(d);
+        }
 
-      render();
-
-      const intervalId = setInterval(() => {
-        ms += 1000;
         render();
-      }, 1000);
 
-      function setupRouteScrolling() {
-        const routeContainers = document.querySelectorAll('.route-container');
+        const intervalId = setInterval(() => {
+            ms += 1000;
+            render();
+        }, 1000);
 
-        routeContainers.forEach(container => {
-          const textElement = container.querySelector('.route-text');
-          const containerWidth = container.clientWidth;
-          const textWidth = textElement.scrollWidth;
+        function setupRouteScrolling() {
+            const routeContainers = document.querySelectorAll('.route-container');
 
-          if (textWidth > containerWidth) {
-            textElement.classList.add('scrolling');
+            routeContainers.forEach(container => {
+                const textElement = container.querySelector('.route-text');
+                const containerWidth = container.clientWidth;
+                const textWidth = textElement.scrollWidth;
 
-            const extraWidth = textWidth - containerWidth;
-            const duration = 8 + (extraWidth / 30);
+                if (textWidth > containerWidth) {
+                    textElement.classList.add('scrolling');
 
-            textElement.style.setProperty('--scroll-duration', `${duration}s`);
-            textElement.style.setProperty('--scroll-offset', `-${extraWidth}px`);
-          } else {
-            textElement.classList.remove('scrolling');
-            textElement.style.removeProperty('--scroll-offset');
-          }
+                    const extraWidth = textWidth - containerWidth;
+                    const duration = 8 + (extraWidth / 30);
+
+                    textElement.style.setProperty('--scroll-duration', `${duration}s`);
+                    textElement.style.setProperty('--scroll-offset', `-${extraWidth}px`);
+                } else {
+                    textElement.classList.remove('scrolling');
+                    textElement.style.removeProperty('--scroll-offset');
+                }
+            });
+        }
+
+        function adaptToScreenSize() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+
+            const fontSizeMultiplier = Math.min(Math.max(width / 1920, 0.8), 1.2);
+            document.documentElement.style.setProperty('--font-scale', fontSizeMultiplier);
+
+            setupRouteScrolling();
+        }
+
+        // ✅ ДОБАВЬ ВОТ ЭТО
+        function setupDebugOverlay() {
+            const debugEnabled = /(^|[?&])debug(=1|=true|=yes)?(&|$)/i.test(location.search);
+            if (!debugEnabled) return;
+
+            const el = document.createElement('div');
+            el.style.cssText = [
+                'position:fixed',
+                'right:16px',
+                'top:16px',
+                'z-index:999999',
+                'background:rgba(0,0,0,.72)',
+                'color:#fff',
+                'padding:10px 12px',
+                'border-radius:10px',
+                'font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial',
+                'white-space:pre',
+                'pointer-events:none'
+            ].join(';');
+            document.body.appendChild(el);
+
+            const format = () => {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                const dpr = window.devicePixelRatio || 1;
+                const sw = screen?.width;
+                const sh = screen?.height;
+
+                const vv = window.visualViewport;
+                const vvw = vv ? Math.round(vv.width) : null;
+                const vvh = vv ? Math.round(vv.height) : null;
+                const vvs = vv ? vv.scale : null;
+
+                const breakpoint =
+                    w >= 2560 ? '>=2560 (4k+ rules ON)' :
+                        w >= 1920 ? '>=1920 (FHD rules ON)' :
+                            w >= 1440 ? '>=1440' :
+                                w >= 1024 ? '>=1024' :
+                                    'mobile';
+
+                el.textContent =
+                    `viewport(inner): ${w}×${h}\n` +
+                    `screen: ${sw}×${sh}\n` +
+                    `dpr: ${dpr}\n` +
+                    (vv ? `visualViewport: ${vvw}×${vvh}  scale:${vvs}\n` : '') +
+                    `css breakpoint: ${breakpoint}\n` +
+                    `ua: ${navigator.userAgent}`;
+            };
+
+            format();
+            window.addEventListener('resize', format);
+            window.visualViewport?.addEventListener('resize', format);
+        }
+
+        window.addEventListener('load', () => {
+            setupRouteScrolling();
+            adaptToScreenSize();
+            setupDebugOverlay(); // ✅ И ВЫЗОВ
         });
-      }
 
-      function adaptToScreenSize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+        window.addEventListener('resize', () => {
+            setupRouteScrolling();
+            adaptToScreenSize();
+            // overlay сам обновится по resize listener
+        });
 
-        const fontSizeMultiplier = Math.min(Math.max(width / 1920, 0.8), 1.2);
-        document.documentElement.style.setProperty('--font-scale', fontSizeMultiplier);
+        setTimeout(setupRouteScrolling, 100);
 
-        setupRouteScrolling();
-      }
-
-      window.addEventListener('load', () => {
-        setupRouteScrolling();
-        adaptToScreenSize();
-      });
-
-      window.addEventListener('resize', () => {
-        setupRouteScrolling();
-        adaptToScreenSize();
-      });
-
-      setTimeout(setupRouteScrolling, 100);
-
-      window.addEventListener('beforeunload', () => {
-        clearInterval(intervalId);
-      });
+        window.addEventListener('beforeunload', () => {
+            clearInterval(intervalId);
+        });
     })();
-  </script>
+
+    window.addEventListener('load', () => {
+        setupRouteScrolling();
+        adaptToScreenSize();
+    });
+
+    window.addEventListener('resize', () => {
+        setupRouteScrolling();
+        adaptToScreenSize();
+    });
+
+    setTimeout(setupRouteScrolling, 100);
+
+    window.addEventListener('beforeunload', () => {
+        clearInterval(intervalId);
+    });
+    })
+    ();
+</script>
 </body>
 </html>
