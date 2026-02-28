@@ -2,20 +2,45 @@
 <html lang="ru">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
+    <!-- TV/WebView: фиксируем масштаб, убираем автозум/автоподгон шрифтов -->
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
     <meta http-equiv="refresh" content="{{ refresh_seconds }}">
     <title>Табло — Саратов-1</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700;900&family=Roboto:wght@400;500;700;900&display=swap"
           rel="stylesheet">
+
     <!-- Подключаем стили в правильном порядке -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}">
-    <!-- ПОЛНОЕ ОТКЛЮЧЕНИЕ СВЕЧЕНИЯ (перебивает всё) -->
+
     <style>
+        /* Базовые "анти-сюрпризы" для TV/WebView */
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* В некоторых движках 100vw может давать микросмещение из-за округлений */
+        .screen {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
         /* 💥 Убираем свечение у всех цветных элементов */
         .arr, .dep,
         .compact-table .arr, .compact-table .dep,
@@ -32,8 +57,35 @@
         .ultra-compact-title ~ .right-block .clock .date {
             text-shadow: none !important;
         }
+
+        /* Debug: подсветка границ и осей */
+        body.debug-mode::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            outline: 2px solid rgba(0, 255, 255, .25);
+            pointer-events: none;
+            z-index: 999997;
+        }
+
+        body.debug-mode::after {
+            content: "";
+            position: fixed;
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(0, 255, 255, .25);
+            pointer-events: none;
+            z-index: 999997;
+        }
+
+        body.debug-mode .screen {
+            outline: 2px solid rgba(255, 255, 255, .18);
+        }
     </style>
 </head>
+
 <body class="device-{{ device_type }} screen-size-{{ screen_size_class }}">
 <div class="screen {{ screen_class }}" style="padding: {{ screen_padding }};">
     <div class="top">
@@ -57,6 +109,15 @@
 
     <div class="box {{ table_class }}">
         <table>
+            <!-- Фиксируем ширины колонок, чтобы разные движки не "плавали" -->
+            <colgroup>
+                <col style="width:16%">
+                <col style="width:42%">
+                <col style="width:14%">
+                <col style="width:14%">
+                <col style="width:14%">
+            </colgroup>
+
             <thead>
             <tr>
                 <th class="c-num">№ поезда</th>
@@ -66,6 +127,7 @@
                 <th class="c-dep">Отправление</th>
             </tr>
             </thead>
+
             <tbody>
             {% if rows %}
                 {% for r in rows %}
@@ -86,9 +148,7 @@
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="5" class="empty-message">
-                        Нет поездов в ближайшее время
-                    </td>
+                    <td colspan="5" class="empty-message">Нет поездов в ближайшее время</td>
                 </tr>
             {% endif %}
             </tbody>
@@ -109,11 +169,11 @@
 
 <script>
     (function () {
-        var tz = "{{ tz_name }}";
         var ms = {{ now_epoch_ms }};
 
         var dateEl = document.querySelector(".clock .date");
         var timeEl = document.querySelector(".clock .time");
+        var screenEl = document.querySelector(".screen");
 
         function pad2(n) {
             return (n < 10 ? "0" : "") + n;
@@ -163,14 +223,84 @@
             setupRouteScrolling();
         }
 
-        function setupDebugOverlay() {
-            var qs = (location && location.search) ? location.search : "";
-            var debugEnabled = /(^|[?&])debug(=1|=true|=yes)?(&|$)/i.test(qs);
+        function qsGet(name) {
+            var qs = (location && location.search) ? location.search.substring(1) : "";
+            if (!qs) return null;
+            var parts = qs.split("&");
+            for (var i = 0; i < parts.length; i++) {
+                var p = parts[i];
+                if (!p) continue;
+                var kv = p.split("=");
+                var k = decodeURIComponent(kv[0] || "");
+                if (k !== name) continue;
+                return decodeURIComponent(kv[1] || "");
+            }
+            return null;
+        }
+
+        function isDebugEnabled() {
+            var v = qsGet("debug");
+            if (v === null) return false;
+            if (v === "" || v === "1" || v === "true" || v === "yes") return true;
+            return false;
+        }
+
+        var debugEnabled = isDebugEnabled();
+        var lastDebugDx = 0;
+
+        function debugDisableMetaRefresh() {
             if (!debugEnabled) return;
+            var meta = document.querySelector('meta[http-equiv="refresh"]');
+            if (meta && meta.parentNode) meta.parentNode.removeChild(meta);
+        }
+
+        // При debug — "выровнять окно": пытаемся центрировать экран в текущем viewport
+        // (полезно при разных браузерах/движках на TV).
+        function debugAutoCenter() {
+            if (!debugEnabled) return;
+            if (!screenEl) return;
+
+            // сбрасываем, чтобы корректно измерить
+            screenEl.style.transform = "";
+            screenEl.style.transformOrigin = "top left";
+
+            var rect = screenEl.getBoundingClientRect();
+            var vw = window.innerWidth || 0;
+
+            // если экран уже ровно во весь viewport — ничего не делаем
+            if (!vw || rect.width === 0) return;
+
+            var dx = 0;
+
+            if (rect.width < vw) {
+                // центрируем, если вдруг экран меньше viewport
+                dx = ((vw - rect.width) / 2) - rect.left;
+            } else {
+                // если есть переполнение — центрируем переполнение
+                var leftOverflow = Math.max(0, -rect.left);
+                var rightOverflow = Math.max(0, rect.right - vw);
+                dx = (leftOverflow - rightOverflow) / 2;
+            }
+
+            dx = Math.round(dx);
+
+            // небольшой порог, чтобы не дёргалось из-за 1px округлений
+            if (Math.abs(dx) <= 1) dx = 0;
+
+            lastDebugDx = dx;
+            if (dx !== 0) {
+                screenEl.style.transform = "translate3d(" + dx + "px, 0, 0)";
+            }
+        }
+
+        function setupDebugOverlay() {
+            if (!debugEnabled) return;
+
+            document.body.classList.add("debug-mode");
 
             var el = document.createElement('div');
             el.style.cssText =
-                'position:fixed;right:16px;top:16px;z-index:999999;' +
+                'position:fixed;right:80px;top:80px;z-index:999999;' +
                 'background:rgba(0,0,0,.72);color:#fff;padding:10px 12px;' +
                 'border-radius:10px;font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial;' +
                 'white-space:pre;pointer-events:none';
@@ -203,6 +333,7 @@
                     "dpr: " + dpr + "\n" +
                     vvLine +
                     "css breakpoint: " + breakpoint + "\n" +
+                    "debug center dx: " + lastDebugDx + "px\n" +
                     "ua: " + navigator.userAgent;
             }
 
@@ -221,15 +352,24 @@
         }, 1000);
 
         document.addEventListener('DOMContentLoaded', function () {
+            debugDisableMetaRefresh();
+
             setupRouteScrolling();
             adaptToScreenSize();
+
+            debugAutoCenter();
             setupDebugOverlay();
-            setTimeout(setupRouteScrolling, 100);
+
+            setTimeout(function () {
+                setupRouteScrolling();
+                debugAutoCenter();
+            }, 100);
         });
 
         window.addEventListener('resize', function () {
             setupRouteScrolling();
             adaptToScreenSize();
+            debugAutoCenter();
         });
 
         window.addEventListener('beforeunload', function () {
