@@ -14,10 +14,11 @@
           rel="stylesheet">
 
     <!-- Подключаем стили в правильном порядке -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}">
+    <!-- cache-bust: TV/WebView часто агрессивно кеширует CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}?v={{ now_epoch_ms }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/skins.css') }}?v={{ now_epoch_ms }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/animations.css') }}?v={{ now_epoch_ms }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/responsive.css') }}?v={{ now_epoch_ms }}">
 
     <style>
         /* Базовые "анти-сюрпризы" для TV/WebView */
@@ -58,6 +59,22 @@
             text-shadow: none !important;
         }
 
+
+        /* Убираем "капсулу"/обводку вокруг даты и времени (по желанию) */
+        .clock, .clock .dt-line {
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+        }
+        .clock { padding: 0 !important; }
+        .clock::before, .clock::after,
+        .clock .dt-line::before, .clock .dt-line::after {
+            content: none !important;
+            display: none !important;
+        }
+
         /* Debug: подсветка границ и осей */
         body.debug-mode::before {
             content: "";
@@ -83,6 +100,135 @@
         body.debug-mode .screen {
             outline: 2px solid rgba(255, 255, 255, .18);
         }
+
+        /* Preset: TV браузер рендерит как 960×540 (пол-FHD) */
+        body.preset-half-fhd .screen {
+            transform-origin: top left;
+        }
+
+        /* ===== Half-FHD (960×540) адаптация: не сжимаем в колонку, уменьшаем вертикальные отступы ===== */
+        @media (max-width: 980px) and (max-height: 560px) {
+            body.preset-half-fhd .screen {
+                padding: 14px !important;
+            }
+
+            /* Верхняя панель: всегда в одну строку */
+            body.preset-half-fhd .top {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+                gap: 14px !important;
+                margin-bottom: 12px !important;
+            }
+
+            body.preset-half-fhd .title-block {
+                min-width: 0 !important;
+                text-align: left !important;
+                align-items: flex-start !important;
+            }
+
+            body.preset-half-fhd .title-block .h1 {
+                font-size: 34px !important;
+                line-height: 1.05 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            body.preset-half-fhd .title-block .sub {
+                font-size: 14px !important;
+                margin-top: 4px !important;
+            }
+
+            body.preset-half-fhd .right-block {
+                flex: 0 0 auto !important;
+                margin: 0 !important;
+            }
+
+            body.preset-half-fhd .clock {
+                /* В пол-FHD убираем любые намёки на "капсулу" */
+                padding: 0 !important;
+                border-radius: 0 !important;
+            }
+
+            body.preset-half-fhd .clock .dt-line {
+                display: flex !important;
+                align-items: baseline !important;
+                justify-content: flex-end !important;
+                gap: 10px !important;
+                white-space: nowrap !important;
+            }
+
+            body.preset-half-fhd .clock .date {
+                font-size: 18px !important;
+            }
+
+            body.preset-half-fhd .clock .time {
+                font-size: 28px !important;
+                letter-spacing: 0.5px !important;
+            }
+
+            /* Таблица: компактнее, чтобы помещалось больше строк */
+            body.preset-half-fhd .box {
+                margin-top: 0 !important;
+            }
+
+            body.preset-half-fhd .box table {
+                width: 100% !important;
+                table-layout: fixed !important;
+            }
+
+            /* На всякий случай перебиваем mobile-правила, которые превращают таблицу в "карточки" */
+            body.preset-half-fhd .box table { display: table !important; }
+            body.preset-half-fhd .box thead { display: table-header-group !important; }
+            body.preset-half-fhd .box tbody { display: table-row-group !important; }
+            body.preset-half-fhd .box tr { display: table-row !important; }
+            body.preset-half-fhd .box th,
+            body.preset-half-fhd .box td { display: table-cell !important; }
+
+
+            /* Подстраиваем colgroup (перебиваем инлайн-ширины) */
+            body.preset-half-fhd .box colgroup col:nth-child(1) { width: 14% !important; }
+            body.preset-half-fhd .box colgroup col:nth-child(2) { width: 46% !important; }
+            body.preset-half-fhd .box colgroup col:nth-child(3) { width: 13.333% !important; }
+            body.preset-half-fhd .box colgroup col:nth-child(4) { width: 13.333% !important; }
+            body.preset-half-fhd .box colgroup col:nth-child(5) { width: 13.333% !important; }
+
+            body.preset-half-fhd .box thead th {
+                font-size: 14px !important;
+                padding: 10px 10px !important;
+                white-space: nowrap !important;
+            }
+
+            body.preset-half-fhd .box tbody td {
+                font-size: 20px !important;
+                padding: 10px 10px !important;
+                line-height: 1.1 !important;
+                white-space: nowrap !important;
+            }
+
+            /* Маршрут: не откусываем первую букву и не ломаем строку */
+            body.preset-half-fhd td.c-route {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            body.preset-half-fhd .route-container {
+                padding: 0 10px !important;
+                overflow: hidden !important;
+                -webkit-mask-image: none !important;
+                mask-image: none !important;
+            }
+
+            body.preset-half-fhd .route-text {
+                display: block !important;
+                white-space: nowrap !important;
+                will-change: transform;
+            }
+        }
+
     </style>
 </head>
 
@@ -218,8 +364,15 @@
 
         function adaptToScreenSize() {
             var width = window.innerWidth || 0;
-            var fontSizeMultiplier = Math.min(Math.max(width / 1920, 0.8), 1.2);
+            var height = window.innerHeight || 0;
+
+            // Если браузер рендерит в 960×540 (пол-FHD), считаем scale как для 1920,
+            // чтобы UI не "переезжал" между TV-браузерами.
+            var logicalWidth = width;
+
+            var fontSizeMultiplier = Math.min(Math.max(logicalWidth / 1920, 0.8), 1.2);
             document.documentElement.style.setProperty('--font-scale', String(fontSizeMultiplier));
+
             setupRouteScrolling();
         }
 
@@ -258,7 +411,33 @@
 
         var lastDebugDx = 0;
 
-        function debugDisableMetaRefresh() {
+
+
+        var halfFhdActive = false;
+
+        function isHalfFhdViewport(w, h) {
+            var lw = Math.max(w, h);
+            var lh = Math.min(w, h);
+            return (Math.abs(lw - 960) <= 3 && Math.abs(lh - 540) <= 3);
+        }
+
+        function updateViewportPreset() {
+            var w = window.innerWidth || 0;
+            var h = window.innerHeight || 0;
+
+            var nextHalf = isHalfFhdViewport(w, h);
+
+            if (nextHalf !== halfFhdActive) {
+                halfFhdActive = nextHalf;
+                if (halfFhdActive) {
+                    document.body.classList.add("preset-half-fhd");
+                } else {
+                    document.body.classList.remove("preset-half-fhd");
+                }
+            }
+        }
+
+function debugDisableMetaRefresh() {
             if (!debugEnabled) return;
             var meta = document.querySelector('meta[http-equiv="refresh"]');
             if (meta && meta.parentNode) meta.parentNode.removeChild(meta);
@@ -266,7 +445,8 @@
 
         // При debug — "выровнять окно": центрируем .screen в текущем viewport
         function debugAutoCenter() {
-            if (!debugEnabled) return;
+            // Центрируем в debug и в режиме пол-FHD (960×540), чтобы ничего не "съезжало"
+            if (!debugEnabled && !halfFhdActive) return;
             if (!screenEl) return;
 
             // сбрасываем, чтобы корректно измерить
@@ -349,7 +529,7 @@
                     "dpr: " + dpr + "\n" +
                     vvLine +
                     "css breakpoint: " + breakpoint + "\n" +
-                    "debug center dx: " + lastDebugDx + "px\n" +
+                    "preset: " + (halfFhdActive ? "half-fhd(960x540)" : "normal") + "\n" + "debug center dx: " + lastDebugDx + "px\n" +
                     "ua: " + navigator.userAgent;
             }
 
@@ -369,6 +549,9 @@
 
         function init() {
             debugDisableMetaRefresh();
+
+            updateViewportPreset();
+
             setupRouteScrolling();
             adaptToScreenSize();
 
@@ -388,6 +571,8 @@
         }
 
         window.addEventListener('resize', function () {
+            updateViewportPreset();
+
             setupRouteScrolling();
             adaptToScreenSize();
             debugAutoCenter();

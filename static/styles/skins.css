@@ -85,18 +85,19 @@
 }
 
 .minimalistic-screen .right-block {
-    align-items: center !important;
+    align-items: flex-end !important;
     gap: 12px !important;
-    min-width: 360px !important;
+    min-width: auto !important;
 }
 
 .minimalistic-screen .clock {
     text-align: right !important;
-    padding: 10px 14px !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 16px !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    min-width: 360px !important;
+    /* Убираем "капсулу" вокруг даты/времени */
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    min-width: auto !important;
 }
 
 .minimalistic-screen .clock .dt-line {
