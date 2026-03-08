@@ -64,7 +64,7 @@
           {% else %}
             <tr>
               <td colspan="5" class="empty-message">
-                Нет поездов в локальной БД. Автоимпорт выполнится при старте и далее каждые 3 минуты. Также можно вызвать <b>GET /refresh</b>.
+                Нет поездов в локальной БД.
               </td>
             </tr>
           {% endif %}
@@ -74,7 +74,7 @@
 
     {% if rows or latest_import %}
       <div class="data-attribution">
-        <a href="http://rasp.yandex.ru/" target="_blank" rel="noopener noreferrer">
+        <a href="https://rasp.yandex.ru/" target="_blank" rel="noopener noreferrer">
           Данные предоставлены сервисом Яндекс.Расписания
         </a>
       </div>
