@@ -14,7 +14,6 @@
     <div class="top">
       <div class="title-block">
         <div class="h1">Онлайн-табло: Саратов-1</div>
-        <div class="sub">Источник данных: локальная база данных · skin: {{ current_skin }}</div>
       </div>
 
       <div class="right-block">
@@ -22,16 +21,6 @@
           <div class="dt-line">
             <span class="date">{{ date_str }}</span>
             <span class="time">{{ time_str }}</span>
-          </div>
-          {% if latest_import %}
-            <div class="import-meta">
-              Импорт #{{ latest_import.batch_id }} · {{ latest_import.imported_at }}
-            </div>
-          {% endif %}
-          <div class="skin-switcher">
-            {% for skin in available_skins %}
-              <a class="skin-chip {{ 'active' if skin == current_skin else '' }}" href="{{ url_for('index', skin=skin) }}">{{ skin }}</a>
-            {% endfor %}
           </div>
         </div>
 
@@ -83,10 +72,20 @@
       </table>
     </div>
 
+    {% if rows or latest_import %}
+      <div class="data-attribution">
+        <a href="http://rasp.yandex.ru/" target="_blank" rel="noopener noreferrer">
+          Данные предоставлены сервисом Яндекс.Расписания
+        </a>
+      </div>
+    {% endif %}
+
     {% if err %}
       <div class="err">{{ err }}</div>
     {% endif %}
   </div>
+
+  <a class="skin-cycle-btn" href="{{ switch_skin_url }}" title="Сменить стиль" aria-label="Сменить стиль">⟳</a>
 
   <script src="{{ url_for('static', filename='js/board.js') }}"></script>
 </body>

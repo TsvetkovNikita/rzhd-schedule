@@ -14,6 +14,17 @@ from tasks.scheduler import yandex_import_scheduler
 from web.auth import AuthManager, require_auth
 
 
+def _build_next_skin(current_skin: str, available_skins: tuple[str, ...]) -> str:
+    if not available_skins:
+        return "classic"
+    try:
+        idx = available_skins.index(current_skin)
+    except ValueError:
+        return available_skins[0]
+    return available_skins[(idx + 1) % len(available_skins)]
+
+
+
 def create_app() -> Flask:
     app = Flask(__name__)
     app.secret_key = cfg.secret_key
@@ -50,6 +61,7 @@ def create_app() -> Flask:
         rows, err, now, meta = cache_manager.get_rows_cached()
         requested_skin = request.args.get('skin')
         skin = cfg.resolve_skin(requested_skin)
+        next_skin = _build_next_skin(skin, cfg.available_skins)
         return render_template(
             'index.html',
             rows=rows,
@@ -64,6 +76,7 @@ def create_app() -> Flask:
             latest_import=meta,
             current_skin=skin,
             available_skins=cfg.available_skins,
+            switch_skin_url=url_for('index', skin=next_skin),
         )
 
     @app.get('/health')
