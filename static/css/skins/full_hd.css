@@ -1,0 +1,14 @@
+:root {
+  --screen-padding-y: 14px;
+  --screen-padding-x: 16px;
+  --screen-gap: 8px;
+  --title-size: clamp(28px, 2.6vw, 56px);
+  --sub-size: clamp(12px, 1vw, 16px);
+  --clock-date-size: clamp(18px, 1.4vw, 28px);
+  --clock-time-size: clamp(28px, 2.2vw, 48px);
+  --clock-min-width: 300px;
+  --table-head-size: clamp(18px, 1.35vw, 24px);
+  --table-cell-size: clamp(22px, 1.8vw, 36px);
+  --table-cell-padding-y: 10px;
+  --table-cell-padding-x: 8px;
+}

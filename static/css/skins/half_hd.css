@@ -1,0 +1,32 @@
+:root {
+  --screen-padding-y: 8px;
+  --screen-padding-x: 10px;
+  --screen-gap: 6px;
+  --top-gap: 8px;
+  --title-size: clamp(18px, 2vw, 28px);
+  --sub-size: clamp(10px, 1vw, 12px);
+  --clock-date-size: clamp(11px, 1vw, 16px);
+  --clock-time-size: clamp(18px, 1.8vw, 26px);
+  --clock-min-width: 180px;
+  --clock-padding-y: 6px;
+  --clock-padding-x: 8px;
+  --box-radius: 12px;
+  --table-head-size: clamp(11px, 1vw, 16px);
+  --table-cell-size: clamp(15px, 1.5vw, 22px);
+  --table-head-padding-y: 8px;
+  --table-head-padding-x: 6px;
+  --table-cell-padding-y: 8px;
+  --table-cell-padding-x: 6px;
+  --num-width: 13%;
+  --route-width: 47%;
+  --arr-width: 13%;
+  --dwell-width: 13%;
+  --dep-width: 14%;
+}
+
+.h1 { letter-spacing: 0; }
+.sub { font-weight: 700; }
+.clock { border-radius: 12px; }
+.import-meta { font-size: 11px; margin-top: 4px; }
+.skin-switcher { gap: 6px; margin-top: 4px; }
+.skin-chip { padding: 3px 8px; font-size: 10px; }

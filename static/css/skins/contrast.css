@@ -1,0 +1,12 @@
+:root {
+  --bg: #05070a;
+  --panel: rgba(255,255,255,.06);
+  --head: rgba(255,255,255,.12);
+  --border: rgba(255,255,255,.18);
+  --text: #f6fbff;
+  --muted: rgba(246,251,255,.75);
+  --arr: #00ff90;
+  --dep: #ff4b4b;
+  --title-accent: #7ed7ff;
+  --header-uppercase: uppercase;
+}

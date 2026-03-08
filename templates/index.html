@@ -1,18 +1,20 @@
+
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-tz="{{ tz_name }}" data-now-epoch-ms="{{ now_epoch_ms }}">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta http-equiv="refresh" content="{{ refresh_seconds }}">
   <title>Табло — Саратов-1</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skins/' ~ current_skin ~ '.css') }}">
 </head>
 <body>
   <div class="screen">
     <div class="top">
       <div class="title-block">
         <div class="h1">Онлайн-табло: Саратов-1</div>
-        <div class="sub">Саратовское время</div>
+        <div class="sub">Источник данных: локальная база данных · skin: {{ current_skin }}</div>
       </div>
 
       <div class="right-block">
@@ -20,6 +22,16 @@
           <div class="dt-line">
             <span class="date">{{ date_str }}</span>
             <span class="time">{{ time_str }}</span>
+          </div>
+          {% if latest_import %}
+            <div class="import-meta">
+              Импорт #{{ latest_import.batch_id }} · {{ latest_import.imported_at }}
+            </div>
+          {% endif %}
+          <div class="skin-switcher">
+            {% for skin in available_skins %}
+              <a class="skin-chip {{ 'active' if skin == current_skin else '' }}" href="{{ url_for('index', skin=skin) }}">{{ skin }}</a>
+            {% endfor %}
           </div>
         </div>
 
@@ -63,7 +75,7 @@
           {% else %}
             <tr>
               <td colspan="5" class="empty-message">
-                Нет поездов в заданном окне
+                Нет поездов в локальной БД. Автоимпорт выполнится при старте и далее каждые 3 минуты. Также можно вызвать <b>GET /refresh</b>.
               </td>
             </tr>
           {% endif %}
@@ -72,78 +84,10 @@
     </div>
 
     {% if err %}
-      <div class="err">Ошибка обновления данных: {{ err }}</div>
+      <div class="err">{{ err }}</div>
     {% endif %}
   </div>
 
-  <script>
-    (() => {
-      const tz = "{{ tz_name }}";
-      let ms = {{ now_epoch_ms }};
-
-      const dateEl = document.querySelector(".clock .date");
-      const timeEl = document.querySelector(".clock .time");
-
-      const fmtDate = new Intl.DateTimeFormat("en-CA", {
-        timeZone: tz,
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      });
-
-      const fmtTime = new Intl.DateTimeFormat("ru-RU", {
-        timeZone: tz,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false
-      });
-
-      function render() {
-        const d = new Date(ms);
-        dateEl.textContent = fmtDate.format(d);
-        timeEl.textContent = fmtTime.format(d);
-      }
-
-      render();
-      setInterval(() => {
-        ms += 1000;
-        render();
-      }, 1000);
-
-      // Функция для проверки и добавления прокрутки длинных названий
-      function setupRouteScrolling() {
-        const routeContainers = document.querySelectorAll('.route-container');
-
-        routeContainers.forEach(container => {
-          const textElement = container.querySelector('.route-text');
-          const containerWidth = container.clientWidth;
-          const textWidth = textElement.scrollWidth;
-
-          // Если текст шире контейнера, добавляем анимацию прокрутки
-          if (textWidth > containerWidth) {
-            textElement.classList.add('scrolling');
-
-            // Рассчитываем длительность анимации в зависимости от длины текста
-            const extraWidth = textWidth - containerWidth;
-            const duration = 10 + (extraWidth / 50); // Базовые 10 секунд + дополнительное время
-
-            textElement.style.setProperty('--scroll-duration', `${duration}s`);
-            textElement.style.setProperty('--scroll-offset', `-${extraWidth}px`);
-          } else {
-            textElement.classList.remove('scrolling');
-            textElement.style.removeProperty('--scroll-offset');
-          }
-        });
-      }
-
-      // Запускаем при загрузке и при изменении размера окна
-      window.addEventListener('load', setupRouteScrolling);
-      window.addEventListener('resize', setupRouteScrolling);
-
-      // Также запускаем после небольшей задержки, чтобы все стили применились
-      setTimeout(setupRouteScrolling, 100);
-    })();
-  </script>
+  <script src="{{ url_for('static', filename='js/board.js') }}"></script>
 </body>
 </html>
