@@ -1,22 +1,28 @@
 :root {
-  --screen-padding-y: 8px;
-  --screen-padding-x: 10px;
-  --screen-gap: 6px;
-  --top-gap: 8px;
-  --title-size: clamp(18px, 2vw, 28px);
-  --sub-size: clamp(10px, 1vw, 12px);
-  --clock-date-size: clamp(11px, 1vw, 16px);
-  --clock-time-size: clamp(18px, 1.8vw, 26px);
-  --clock-min-width: 180px;
-  --clock-padding-y: 6px;
-  --clock-padding-x: 8px;
+  --screen-padding-y: 4px;
+  --screen-padding-x: 8px;
+  --screen-gap: 3px;
+  --top-gap: 6px;
+  --title-size: clamp(16px, 1.75vw, 23px);
+  --sub-size: clamp(9px, 0.88vw, 11px);
+  --clock-date-size: clamp(10px, 0.92vw, 13px);
+  --clock-time-size: clamp(16px, 1.58vw, 22px);
+  --clock-min-width: 160px;
+  --clock-padding-y: 3px;
+  --clock-padding-x: 6px;
   --box-radius: 12px;
-  --table-head-size: clamp(11px, 1vw, 16px);
-  --table-cell-size: clamp(15px, 1.5vw, 22px);
-  --table-head-padding-y: 8px;
-  --table-head-padding-x: 6px;
-  --table-cell-padding-y: 8px;
-  --table-cell-padding-x: 6px;
+  --table-head-size: clamp(9px, 0.84vw, 12px);
+  --table-cell-size: clamp(16px, 1.72vw, 23px);
+  --num-cell-size: clamp(16px, 1.72vw, 23px);
+  --route-cell-size: clamp(19px, 1.98vw, 26px);
+  --time-cell-size: clamp(16px, 1.72vw, 23px);
+  --dwell-cell-size: clamp(15px, 1.55vw, 21px);
+  --route-cell-weight: 850;
+  --table-head-padding-y: 5px;
+  --table-head-padding-x: 4px;
+  --table-cell-padding-y: 5px;
+  --table-cell-padding-x: 5px;
+  --table-cell-line-height: 1.02;
   --num-width: 13%;
   --route-width: 47%;
   --arr-width: 13%;
@@ -27,6 +33,28 @@
 .h1 { letter-spacing: 0; }
 .sub { font-weight: 700; }
 .clock { border-radius: 12px; }
-.import-meta { font-size: 11px; margin-top: 4px; }
-.skin-switcher { gap: 6px; margin-top: 4px; }
-.skin-chip { padding: 3px 8px; font-size: 10px; }
+
+/* держим шапку таблицы строго в 1 строку */
+thead th {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+/* даём строкам больше полезной площади */
+tbody td {
+  font-weight: 700;
+}
+
+.data-attribution { min-height: 16px; padding-top: 0; }
+.data-attribution a { font-size: 9px; }
+.skin-cycle-btn { right: 10px; bottom: 8px; width: 24px; height: 24px; font-size: 12px; }
+
+/* уменьшаем длинные заголовки временных колонок до уровня заголовка маршрута */
+thead th.c-arr,
+thead th.c-dwell,
+thead th.c-dep {
+  font-size: clamp(8px, 0.76vw, 10px);
+  letter-spacing: -0.01em;
+}

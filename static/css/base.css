@@ -26,6 +26,12 @@
   --table-head-padding-x: 10px;
   --table-cell-padding-y: 12px;
   --table-cell-padding-x: 10px;
+  --table-cell-line-height: 1.15;
+  --num-cell-size: var(--table-cell-size);
+  --route-cell-size: var(--table-cell-size);
+  --time-cell-size: var(--table-cell-size);
+  --dwell-cell-size: var(--table-cell-size);
+  --route-cell-weight: 800;
   --num-width: 15%;
   --route-width: 43%;
   --arr-width: 14%;
@@ -169,6 +175,7 @@ thead th {
 tbody td {
   padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
   font-size: var(--table-cell-size);
+  line-height: var(--table-cell-line-height);
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, .08);
   vertical-align: middle;
@@ -196,7 +203,23 @@ tbody td {
   white-space: nowrap;
   padding: 0 4px;
   display: inline-block;
+  font-size: var(--route-cell-size);
+  font-weight: var(--route-cell-weight);
+  line-height: var(--table-cell-line-height);
   will-change: transform;
+}
+
+.c-num b {
+  font-size: var(--num-cell-size);
+  font-weight: 900;
+}
+
+.c-arr, .c-dep {
+  font-size: var(--time-cell-size);
+}
+
+.c-dwell {
+  font-size: var(--dwell-cell-size);
 }
 
 .route-text.scrolling {
@@ -214,7 +237,7 @@ tbody td {
 .arr {
   color: var(--arr);
   font-weight: 950;
-  text-shadow: 0 0 10px rgba(0, 230, 118, .35);
+  text-shadow: none;
 }
 
 .dep {
