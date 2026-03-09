@@ -100,9 +100,10 @@ html, body {
 .clock {
   text-align: right;
   padding: var(--clock-padding-y) var(--clock-padding-x);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--panel);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   min-width: var(--clock-min-width);
 }
 
