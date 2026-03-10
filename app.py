@@ -97,6 +97,10 @@ def create_app() -> Flask:
             'database': 'ok' if db_ok else 'unknown',
             'scheduler_enabled': cfg.scheduler_enabled,
             'scheduler_interval_seconds': cfg.scheduler_interval_seconds,
+            'scheduler_effective_interval_seconds': cfg.effective_scheduler_interval_seconds(),
+            'yandex_daily_request_limit': cfg.yandex_daily_request_limit,
+            'yandex_max_requests_per_cycle': cfg.max_yandex_requests_per_cycle(),
+            'scheduler_estimated_requests_per_day': cfg.estimated_scheduler_requests_per_day(),
         })
 
     @app.get('/refresh')

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -37,6 +37,20 @@ class YandexAPIClient:
         if not dt_str:
             return None
         return datetime.fromisoformat(dt_str)
+
+    @staticmethod
+    def _iter_dates(start_date: date, end_date: date) -> list[str]:
+        current = start_date
+        out: list[str] = []
+        while current <= end_date:
+            out.append(current.isoformat())
+            current += timedelta(days=1)
+        return out
+
+    def build_requested_dates(self, now: datetime) -> list[str]:
+        start = now - timedelta(minutes=cfg.past_minutes)
+        end = now + timedelta(minutes=cfg.future_minutes)
+        return self._iter_dates(start.date(), end.date())
 
     def fetch_items_for_date(self, date_str: str, event: str) -> List[YandexFetchItem]:
         """Получение расписания на определенную дату"""
@@ -92,11 +106,11 @@ class YandexAPIClient:
         start = now - timedelta(minutes=cfg.past_minutes)
         end = now + timedelta(minutes=cfg.future_minutes)
 
-        dates = {now.date().isoformat(), (now.date() + timedelta(days=1)).isoformat()}
+        dates = self.build_requested_dates(now)
         groups: Dict[str, TrainRow] = {}
 
-        for d in sorted(dates):
-            for event in ("arrival", "departure"):
+        for d in dates:
+            for event in cfg.yandex_events:
                 for item in self.fetch_items_for_date(d, event):
                     if not (start <= item.event_time <= end):
                         continue

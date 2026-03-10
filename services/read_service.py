@@ -18,7 +18,11 @@ class ScheduleReadService:
         with repository_gateway.session_scope() as repos:
             batch = repos.schedule_imports.get_latest_success_batch()
             if batch is None:
-                return [], "В базе данных пока нет импортированных расписаний. Автоимпорт выполнится при старте и далее каждые 3 минуты. Также можно вызвать GET /refresh.", now, None
+                interval = cfg.effective_scheduler_interval_seconds()
+                return [], (
+                    "В базе данных пока нет импортированных расписаний. "
+                    f"Автоимпорт выполнится при старте и далее по расписанию (примерно каждые {interval} сек.). "
+                ), now, None
 
             rows = [item.to_train_row() for item in batch.rows]
             meta = {

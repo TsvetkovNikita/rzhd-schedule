@@ -1,6 +1,6 @@
-
 from __future__ import annotations
 
+import math
 import os
 from typing import Any, Dict
 from urllib.parse import quote_plus
@@ -25,8 +25,9 @@ class Config:
         app_cfg = self._config.get("app", {})
         self.secret_key = str(app_cfg.get("secret_key", "change-me-secret-key"))
 
-        self.yandex_endpoint = "https://api.rasp.yandex.net/v3.0/schedule/"
+        self.yandex_endpoint = "https://api.rasp.yandex-net.ru/v3.0/schedule/"
         self.allowed_transport = {"train", "suburban"}
+        self.yandex_events = ("arrival", "departure")
 
         display = self._config["display"]
         self.tz = ZoneInfo(display["timezone"])
@@ -49,6 +50,7 @@ class Config:
         self.station_code = str(yandex["station_code"])
         self.station_system = str(yandex.get("station_system", "yandex"))
         self.lang = str(yandex.get("lang", "ru_RU"))
+        self.yandex_daily_request_limit = int(yandex.get("daily_request_limit", 500))
 
         database = self._config.get("database", {})
         self.db_host = str(database.get("host", "127.0.0.1"))
@@ -93,6 +95,28 @@ class Config:
         candidate = (requested_skin or self.skin or "classic").strip().lower()
         allowed = set(self.available_skins)
         return candidate if candidate in allowed else "classic"
+
+    def max_window_days_per_cycle(self) -> int:
+        past_days = math.ceil(max(self.past_minutes, 0) / 1440)
+        future_days = math.ceil(max(self.future_minutes, 0) / 1440)
+        return max(1, 1 + past_days + future_days)
+
+    def max_yandex_requests_per_cycle(self) -> int:
+        return max(1, len(self.yandex_events) * self.max_window_days_per_cycle())
+
+    def min_scheduler_interval_for_daily_limit(self) -> int:
+        if self.yandex_daily_request_limit <= 0:
+            return max(10, self.scheduler_interval_seconds)
+        requests_per_cycle = self.max_yandex_requests_per_cycle()
+        return max(10, math.ceil((86400 * requests_per_cycle) / self.yandex_daily_request_limit))
+
+    def effective_scheduler_interval_seconds(self) -> int:
+        return max(10, self.scheduler_interval_seconds, self.min_scheduler_interval_for_daily_limit())
+
+    def estimated_scheduler_requests_per_day(self) -> int:
+        interval = self.effective_scheduler_interval_seconds()
+        cycles_per_day = 86400 // interval
+        return int(cycles_per_day * self.max_yandex_requests_per_cycle())
 
     def get(self, key: str, default: Any = None) -> Any:
         return self._config.get(key, default)

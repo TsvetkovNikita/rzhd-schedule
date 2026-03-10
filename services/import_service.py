@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -43,15 +42,15 @@ class ScheduleImportService:
             "lang": cfg.lang,
             "window_start": window_start.isoformat(),
             "window_end": window_end.isoformat(),
-            "events": ["arrival", "departure"],
-            "dates": sorted({now.date().isoformat(), (now.date() + timedelta(days=1)).isoformat()}),
+            "events": list(cfg.yandex_events),
+            "dates": yandex_client.build_requested_dates(now),
         }
 
         try:
             rows = yandex_client.collect_window_rows(now)
         except Exception as exc:
             with repository_gateway.session_scope() as repos:
-                batch = repos.schedule_imports.create_batch(
+                repos.schedule_imports.create_batch(
                     source="yandex",
                     station_code=cfg.station_code,
                     station_system=cfg.station_system,
